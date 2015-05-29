@@ -41,10 +41,13 @@ class StdOutListener(StreamListener):
                     tweet_data['timestamp_ms'] = int(float(tweet['timestamp_ms']))
                 except:
                     tweet_data['timestamp_ms'] = None
-                tweets.insert_one(tweet_data)
-                print location, point
-                text = tweet['text'].encode('utf-8')
-                print text, "\n"
+                try:
+                    tweets.insert_one(tweet_data)
+                    print location, point
+                    text = tweet['text'].encode('utf-8')
+                    print text, "\n"
+                except:
+                    print "error"
                 # blob_text = TextBlob(tweet['text'])
                 # print vaderSentiment(text)
                 # print blob_text.sentiment

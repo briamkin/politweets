@@ -8,31 +8,39 @@
     <h1>TEST</h1>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="http://d3js.org/d3.v3.min.js"></script>
-    <script src="static/d3.slider.js"></script>
 
     <script>
-     function getAndDrawChance(age, year, nodes){
+     // function get_momentum(){
 
-       year = year - 1900;
        $.ajax({
          type: "POST",
          contentType: "application/json; charset=utf-8",
-         url: "/score",
+         url: "/momentum",
          dataType: "json",
          async: true,
-         data: "{\"example\": ["+age+","+year+","+nodes+"]}",
+         data: false,
          success: function (data) {
-           var chance = 100 * data["score"];
-           d3.select("#chancebar")
-             .attr("width", chance_scale(chance));
-           d3.select("#percent_text")
-             .attr("x", chance_scale(chance-5))
-             .text(chance.toFixed(1) + "%");
+           console.log(data)
          },
          error: function (result) {
+          console.log(result)
          }
        })
-     }
+     // }
+      $.ajax({
+         type: "POST",
+         contentType: "application/json; charset=utf-8",
+         url: "/tweets",
+         dataType: "json",
+         async: true,
+         data: false,
+         success: function (data) {
+           console.log(data)
+         },
+         error: function (result) {
+          console.log(result)
+         }
+       })
 
     </script>
   </body>

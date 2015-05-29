@@ -6,11 +6,24 @@ import time
 #---------- BUILT MOMENTUM MODEL ----------------#
 areas = ["bronx","harlem","upper_west","upper_east","midtown","downtown","brooklyn","queens","san_fran","west_bay","east_bay","south_bay"]
 
-def find_momentum():
+def return_tweets():
+    client = MongoClient()
+    db = client.fletcher.tweets
+    tweets = {}
+    minute = (current_time - 60) * 1000
+    for area in areas:
+        query_tweets = []
+        query = db.find({"city_area":area,"timestamp_ms":{"$gte":minute}})
+        for tweet in query:
+            tweets.append([tweet['text'],tweet['timestamp_ms'],tweet['user'],tweet['coordinates'],tweet['city_area']])
+        tweets[area] = query_tweets
+    return tweets
+
+def return_momentum():
     current_time = int(time.time())
     five_min = (current_time - 300) * 1000
-    ten_min = (current_time-600) * 1000
-    fifteen_min = (current_time-900) * 1000
+    ten_min = (current_time - 600) * 1000
+    fifteen_min = (current_time - 900) * 1000
     client = MongoClient()
     db = client.fletcher.tweets
     five_counts = {}
@@ -28,7 +41,7 @@ def find_momentum():
         fifteen_counts[area] = count
     for area in areas:
         change1 = (fifteen_counts[area]-ten_counts[area])/(fifteen_counts[area]+0.001)
-        change2 = (ten_counts[area]-fiv_counts[area])/(ten_counts[area]+0.001)
+        change2 = (ten_counts[area]-five_counts[area])/(ten_counts[area]+0.001)
         if change1 > 0 and change2 > 0:
             if change2 > change1:
                 momentum[area] = 6
@@ -43,6 +56,8 @@ def find_momentum():
             momentum[area] = 2
         elif change2 <= 0 and change2 >= 0:
             momentum[area] = 4
+        else:
+            momentum[area] = 0
     return momentum
 
 #---------- URLS AND WEB PAGES -------------#
@@ -63,16 +78,20 @@ def home():
 @app.route("/momentum", methods=["POST"])
 def momentum():
     """
-    When A POST request with json data is made to this uri,
-    return the momentum for the last 5 minutes
+    When A POST request is made to this uri, return the momentum.
     """
-    # Get decision score for our example that came with the request
-    # data = flask.request.json
 
-    x = np.matrix(data["example"])
-    score = PREDICTOR.predict_proba(x)
     # Put the result in a nice dict so we can send it as json
-    results = {"score": score[0,1]}
+    # results = find_momentum()
+    results = return_momentum()
+    return flask.jsonify(results)
+
+@app.route("/tweets", methods=["POST"])
+def tweets():
+    """
+    When A POST request is made to this uri, return tweets in the last minute.
+    """
+    results = return_tweets()
     return flask.jsonify(results)
 
 #--------- RUN WEB APP SERVER ------------#
