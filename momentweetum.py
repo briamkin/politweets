@@ -1,3 +1,4 @@
+from __future__ import division
 import flask
 from pymongo import MongoClient
 import time
@@ -15,6 +16,7 @@ def find_momentum():
     five_counts = {}
     ten_counts = {}
     fifteen_counts = {}
+    momentum = {}
     for area in areas:
         count = db.find({"city_area":area,"timestamp_ms":{"$gte":five_min}}).count()
         five_counts[area] = count
@@ -25,8 +27,23 @@ def find_momentum():
         count = db.find({"city_area":area,"timestamp_ms":{"$gte":fifteen_min, "$lt":ten_min}}).count()
         fifteen_counts[area] = count
     for area in areas:
-
-
+        change1 = (fifteen_counts[area]-ten_counts[area])/(fifteen_counts[area]+0.001)
+        change2 = (ten_counts[area]-fiv_counts[area])/(ten_counts[area]+0.001)
+        if change1 > 0 and change2 > 0:
+            if change2 > change1:
+                momentum[area] = 6
+            else:
+                momentum[area] = 5
+        elif change1 <= 0 and change2 <= 0:
+            if change1 < change2:
+                momentum[area] = 3
+            else:
+                momentum[area] = 1
+        elif change1 >= 0 and change2 <= 0:
+            momentum[area] = 2
+        elif change2 <= 0 and change2 >= 0:
+            momentum[area] = 4
+    return momentum
 
 #---------- URLS AND WEB PAGES -------------#
 
