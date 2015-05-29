@@ -7,15 +7,16 @@ import time
 areas = ["bronx","harlem","upper_west","upper_east","midtown","downtown","brooklyn","queens","san_fran","west_bay","east_bay","south_bay"]
 
 def return_tweets():
+    current_time = int(time.time())
     client = MongoClient()
     db = client.fletcher.tweets
     tweets = {}
-    minute = (current_time - 60) * 1000
+    minute = (current_time - 120) * 1000
     for area in areas:
         query_tweets = []
         query = db.find({"city_area":area,"timestamp_ms":{"$gte":minute}})
         for tweet in query:
-            tweets.append([tweet['text'],tweet['timestamp_ms'],tweet['user'],tweet['coordinates'],tweet['city_area']])
+            query_tweets.append([tweet['text'],tweet['timestamp_ms'],tweet['user']['screen_name'],tweet['coordinates']['coordinates']])
         tweets[area] = query_tweets
     return tweets
 
