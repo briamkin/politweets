@@ -21,7 +21,7 @@ consumer_secret = config['consumer_secret']
 class StdOutListener(StreamListener):
 
     def on_data(self, data):
-        fields = ['created_at', 'id', 'text', 'source', 'user', 'geo', 'coordinates', 'entities', 'possibly_sensitive', 'filter_level', 'timestamp_ms']
+        fields = ['created_at', 'id', 'text', 'source', 'user', 'geo', 'coordinates', 'entities', 'possibly_sensitive', 'filter_level']
         client = MongoClient()
         tweets = client.fletcher.tweets
         tweet = json.loads(data)
@@ -36,7 +36,11 @@ class StdOutListener(StreamListener):
                         tweet_data[field] = tweet[field]
                     except:
                         tweet_data[field] = None
-                tweet_data['city'] = location
+                tweet_data['city_area'] = location
+                try:
+                    tweet_data['timestamp_ms'] = int(float(tweet['timestamp_ms']))
+                except:
+                    tweet_data['timestamp_ms'] = None
                 tweets.insert_one(tweet_data)
                 print location, point
                 text = tweet['text'].encode('utf-8')
