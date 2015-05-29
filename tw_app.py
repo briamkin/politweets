@@ -8,6 +8,7 @@ from geo import *
 from vaderSentiment.vaderSentiment import sentiment as vaderSentiment
 from textblob import TextBlob
 from pymongo import MongoClient
+import time
 
 config = cnfg.load(".twitter_config")
 
@@ -66,6 +67,13 @@ if __name__ == '__main__':
     auth.set_access_token(access_token, access_token_secret)
     stream = Stream(auth, l)
 
-    #This line filter Twitter Streams to capture data by the keywords: 'python', 'javascript', 'ruby'
-    # stream.filter(track=['python', 'javascript', 'ruby'])
-    stream.filter(locations=[-122.6,37.25,-121.75,38,-74.1,40.5,-73.6,40.9])
+    delay = 8 # seconds
+
+    try:
+        stream.filter(locations=[-122.6,37.25,-121.75,38,-74.1,40.5,-73.6,40.9])
+        delay = 8
+    except:
+        print "Error. Trying again"
+        time.sleep(delay)
+        delay *= 2
+        stream.filter(locations=[-122.6,37.25,-121.75,38,-74.1,40.5,-73.6,40.9])
