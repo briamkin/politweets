@@ -54,4 +54,4 @@ def find_county(point):
                     if in_polygon(point, path):
                         return fips_num
                         break
-    return None
+    return fips_list[0]
