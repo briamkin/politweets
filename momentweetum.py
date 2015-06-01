@@ -2,9 +2,9 @@ from __future__ import division
 import flask
 from pymongo import MongoClient
 import time
+from county_geo import county_fips, all_fips
 
 #---------- BUILT MOMENTUM MODEL ----------------#
-areas = ["bronx","harlem","upper_west","upper_east","midtown","downtown","brooklyn","queens","san_fran","west_bay","east_bay","south_bay"]
 
 def return_tweets():
     current_time = int(time.time())
@@ -12,9 +12,9 @@ def return_tweets():
     db = client.fletcher.tweets
     tweets = {}
     minute = (current_time - 120) * 1000
-    for area in areas:
+    for num in fips:
         query_tweets = []
-        query = db.find({"city_area":area,"timestamp_ms":{"$gte":minute}})
+        query = db.find({"city_area":num,"timestamp_ms":{"$gte":minute}})
         for tweet in query:
             query_tweets.append([tweet['text'],tweet['timestamp_ms'],tweet['user']['screen_name'],tweet['coordinates']['coordinates']])
         tweets[area] = query_tweets

@@ -12,13 +12,11 @@ import time
 
 config = cnfg.load(".twitter_config")
 
-#Variables that contains the user credentials to access Twitter API
 access_token = config['access_token']
 access_token_secret = config['access_token_secret']
 consumer_key = config['consumer_key']
 consumer_secret = config['consumer_secret']
 
-#This is a basic listener that just prints received tweets to stdout.
 class StdOutListener(StreamListener):
 
     def on_data(self, data):
@@ -26,54 +24,57 @@ class StdOutListener(StreamListener):
         client = MongoClient()
         tweets = client.fletcher.tweets
         tweet = json.loads(data)
-        coordinate = tweet['coordinates']
-        if coordinate != None:
-            point = (coordinate['coordinates'][1], coordinate['coordinates'][0])
-            location = find_location(point)
-            if location != None:
-                tweet_data = {}
-                for field in fields:
+        try:
+            coordinate = tweet['coordinates']
+            if coordinate != None:
+                point = (coordinate['coordinates'][1], coordinate['coordinates'][0])
+                location = find_county(point,1)
+                if location != None:
+                    tweet_data = {}
+                    for field in fields:
+                        try:
+                            tweet_data[field] = tweet[field]
+                        except:
+                            tweet_data[field] = None
+                    tweet_data['fips'] = location[0]
+                    loc_name = str(location[1]) + ", " + str(location[2])
                     try:
-                        tweet_data[field] = tweet[field]
+                        tweet_data['timestamp_ms'] = int(float(tweet['timestamp_ms']))
                     except:
-                        tweet_data[field] = None
-                tweet_data['city_area'] = location
-                try:
-                    tweet_data['timestamp_ms'] = int(float(tweet['timestamp_ms']))
-                except:
-                    tweet_data['timestamp_ms'] = None
-                try:
-                    tweets.insert_one(tweet_data)
-                    print location, point
-                    text = tweet['text'].encode('utf-8')
-                    print text, "\n"
-                except:
-                    print "error"
-                # blob_text = TextBlob(tweet['text'])
-                # print vaderSentiment(text)
-                # print blob_text.sentiment
-                # print
-                return True
+                        tweet_data['timestamp_ms'] = None
+                    try:
+                        tweets.insert_one(tweet_data)
+                        print loc_name, point
+                        text = tweet['text'].encode('utf-8')
+                        print text, "\n"
+                    except:
+                        print "error"
+                    # blob_text = TextBlob(tweet['text'])
+                    # print vaderSentiment(text)
+                    # print blob_text.sentiment
+                    # print
+                    return True
+        except:
+            pass
 
     def on_error(self, status):
-        print status
+        print "error",status
 
 
 if __name__ == '__main__':
 
-    #This handles Twitter authetification and the connection to Twitter Streaming API
     l = StdOutListener()
     auth = OAuthHandler(consumer_key, consumer_secret)
     auth.set_access_token(access_token, access_token_secret)
     stream = Stream(auth, l)
-
-    delay = 8 # seconds
+    delay = 8
+    all_us = [-169.90,52.72,-130.53,72.40,-124.90,23.92,-66.37,50.08]
 
     try:
-        stream.filter(locations=[-122.6,37.25,-121.75,38,-74.1,40.5,-73.6,40.9])
+        stream.filter(locations=all_us)
         delay = 8
     except:
         print "Error. Trying again"
         time.sleep(delay)
         delay *= 2
-        stream.filter(locations=[-122.6,37.25,-121.75,38,-74.1,40.5,-73.6,40.9])
+        stream.filter(locations=all_us)
