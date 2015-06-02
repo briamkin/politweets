@@ -69,7 +69,7 @@ def find_county(point, full=0):
                         fips = fips_num
                         break
 
-    # Point is most likely outside of US, return None
+    # Point is most likely outside of  AUS, return None
     if dist[0][0] > 6:
         return None
 

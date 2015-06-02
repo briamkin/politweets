@@ -68,7 +68,7 @@ if __name__ == '__main__':
     auth.set_access_token(access_token, access_token_secret)
     stream = Stream(auth, l)
     delay = 8
-    all_us = [-169.90,52.72,-130.53,72.40,-124.90,23.92,-66.37,50.08]
+    all_us = [-169.90,52.72,-130.53,72.40,-160.6,18.7,-154.5,22.3,-124.90,23.92,-66.37,50.08]
 
     try:
         stream.filter(locations=all_us)
