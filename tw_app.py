@@ -69,12 +69,12 @@ if __name__ == '__main__':
     stream = Stream(auth, l)
     delay = 8
     all_us = [-169.90,52.72,-130.53,72.40,-160.6,18.7,-154.5,22.3,-124.90,23.92,-66.37,50.08]
-
-    try:
-        stream.filter(locations=all_us)
-        delay = 8
-    except:
-        print "Error. Trying again"
-        time.sleep(delay)
-        delay *= 2
-        stream.filter(locations=all_us)
+    while True:
+        try:
+            stream.filter(locations=all_us)
+            delay = 8
+        except:
+            print "Error. Trying again"
+            time.sleep(delay)
+            delay *= 2
+            stream.filter(locations=all_us)
