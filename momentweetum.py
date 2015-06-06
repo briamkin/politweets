@@ -13,7 +13,8 @@ def return_tweets(hours):
     tweets = {}
     hrs = hours * 3600
     min_time = (current_epoch_time - hrs) * 1000
-    query = db.aggregate([{"$match":{"timestamp_ms":{"$gte":1433444659000}}}])
+    query = db.aggregate([{"$match":{"timestamp_ms":{"$gte":min_time}}}])
+    # query = db.aggregate([{"$match":{"$text":{"$search":"hillary, clinton"}}}])
     for tweet in query:
         fips = tweet['fips']
         if fips in tweets:
@@ -102,4 +103,4 @@ def tweets():
 
 # Start the app server on port 80
 # (The default website port)
-app.run(host='0.0.0.0', port=5000)
+app.run(host='0.0.0.0', port=80)

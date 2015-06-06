@@ -74,8 +74,7 @@ class StdOutListener(StreamListener):
         try:
             try:
                 coordinate = tweet['geo']['coordinates']
-            except Exception:
-                logger.exception("Trying 2nd coordinates field")
+            except:
                 coordinate = tweet['coordinates']
             if coordinate != None:
                 point = (coordinate[0], coordinate[1])
@@ -90,52 +89,40 @@ class StdOutListener(StreamListener):
                     try:
                         tweet_data['text'] = tweet['text'].encode('utf-8')
                         tweet_data['sentiment'] = vaderSentiment(tweet_data['text'])
-                    except Exception:
-                        logger.exception("Error adding text")
+                    except:
                         tweet_data['text'] = None
                     try:
                         tweet_data['retweet_count'] = tweet['retweet_count']
-                    except Exception:
-                        logger.exception("Error adding retweet_count")
+                    except:
                         tweet_data['retweet_count'] = None
                     try:
                         tweet_data['retweeted'] = tweet['retweeted']
-                    except Exception:
-                        logger.exception("Error adding retweeted")
+                    except:
                         tweet_data['retweeted'] = None
                     try:
                         tweet_data['timestamp_ms'] = int(float(tweet['timestamp_ms']))
-                        try:
-                            backup_mongo_daily(tweet_data['timestamp_ms'], client)
-                        except Exception:
-                            logger.exception("Daily backup error")
-                    except Exception:
-                        logger.exception("Missing tweet timestamp")
+                    except:
                         tweet_data['timestamp_ms'] = None
                     try:
                         tweet_data['hashtags'] = tweet['entities']['hashtags']
-                    except Exception:
-                        logger.exception("Error adding hashtags")
+                    except:
                         tweet_data['hashtags'] = None
                     try:
                         tweet_data['profile_img'] = tweet['user']['profile_image_url']
-                    except Exception:
-                        logger.exception("Error adding profile_image_url")
+                    except:
                         tweet_data['profile_img'] = None
                     try:
                         tweet_data['screen_name'] = tweet['user']['screen_name']
-                    except Exception:
-                        logger.exception("Error adding screen_name")
+                    except:
                         tweet_data['screen_name'] = None
                     try:
                         tweet_data['friends_count'] = tweet['user']['friends_count']
-                    except Exception:
-                        logger.exception("Error adding friends_count")
+                    except:
                         tweet_data['friends_count'] = None
                     try:
                         tweets.insert_one(tweet_data)
                         print loc_name, point
-                        print tweet_data['text'], "\n"
+                        print tweet_data['text']
                         print tweet_data['sentiment']
                     except Exception:
                         logger.exception("Error inserting into Mongo")
@@ -157,12 +144,15 @@ if __name__ == '__main__':
     stream = Stream(auth, l)
     delay = 8
     all_us = [-169.90,52.72,-130.53,72.40,-160.6,18.7,-154.5,22.3,-124.90,23.92,-66.37,50.08]
+    delay = 8
     while True:
         try:
             stream.filter(locations=all_us)
-            delay = 8
         except Exception:
             logger.exception("Stream error. Increasing try time to: " + str(delay) + " seconds")
             time.sleep(delay)
             delay *= 2
-            stream.filter(locations=all_us)
+            try:
+                stream.filter(locations=all_us)
+            except:
+                pass
