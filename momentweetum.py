@@ -103,4 +103,4 @@ def tweets():
 
 # Start the app server on port 80
 # (The default website port)
-app.run(host='0.0.0.0', port=80)
+app.run(host='0.0.0.0', port=5000)
