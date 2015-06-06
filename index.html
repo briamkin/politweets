@@ -10,37 +10,42 @@
     <script src="http://d3js.org/d3.v3.min.js"></script>
 
     <script>
-     // function get_momentum(){
 
-       $.ajax({
-         type: "POST",
-         contentType: "application/json; charset=utf-8",
-         url: "/momentum",
-         dataType: "json",
-         async: true,
-         data: false,
-         success: function (data) {
-           console.log(data)
-         },
-         error: function (result) {
-          console.log(result)
-         }
-       })
-     // }
+       // $.ajax({
+       //   type: "POST",
+       //   contentType: "application/json; charset=utf-8",
+       //   url: "/momentum",
+       //   dataType: "json",
+       //   async: true,
+       //   data: false,
+       //   success: function (data) {
+       //     console.log(data)
+       //   },
+       //   error: function (result) {
+       //    console.log(result)
+       //   }
+       // })
+    (function update_map() {
       $.ajax({
-         type: "POST",
-         contentType: "application/json; charset=utf-8",
-         url: "/tweets",
-         dataType: "json",
-         async: true,
-         data: false,
-         success: function (data) {
-           console.log(data)
-         },
-         error: function (result) {
+        type: "POST",
+        contentType: "application/json; charset=utf-8",
+        url: "/tweets",
+        dataType: "json",
+        async: true,
+        data: "{\"hrs\": 0.5, \"search\":\"\"}",
+        success: function (data) {
+          console.log(data)
+        },
+        error: function (result) {
           console.log(result)
-         }
-       })
+        },
+        complete: function () {
+          setTimeout(update_map, 5000)
+        }
+      });
+    })();
+
+
 
     </script>
   </body>

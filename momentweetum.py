@@ -6,21 +6,23 @@ from county_geo import county_fips, all_fips
 
 #---------- BUILT MOMENTUM MODEL ----------------#
 
-def return_tweets():
-    current_time = int(time.time())
+def return_tweets(hours):
+    current_epoch_time = int(time.time())
     client = MongoClient()
     db = client.fletcher.tweets
     tweets = {}
-    minute = (current_time - 120) * 1000
-    for num in fips:
-        query_tweets = []
-        query = db.find({"city_area":num,"timestamp_ms":{"$gte":minute}})
-        for tweet in query:
-            query_tweets.append([tweet['text'],tweet['timestamp_ms'],tweet['user']['screen_name'],tweet['coordinates']['coordinates']])
-        tweets[area] = query_tweets
+    hrs = hours * 3600
+    min_time = (current_epoch_time - hrs) * 1000
+    query = db.aggregate([{"$match":{"timestamp_ms":{"$gte":1433444659000}}}])
+    for tweet in query:
+        fips = tweet['fips']
+        if fips in tweets:
+            tweets[fips] += 1
+        else:
+            tweets[fips] = 1
     return tweets
 
-def return_momentum():
+def return_history():
     current_time = int(time.time())
     five_min = (current_time - 300) * 1000
     ten_min = (current_time - 600) * 1000
@@ -76,15 +78,15 @@ def home():
         return file.read()
 
 # Get an example and return it's score from the predictor model
-@app.route("/momentum", methods=["POST"])
-def momentum():
+@app.route("/county", methods=["POST"])
+def county():
     """
     When A POST request is made to this uri, return the momentum.
     """
 
     # Put the result in a nice dict so we can send it as json
     # results = find_momentum()
-    results = return_momentum()
+    results = return_history()
     return flask.jsonify(results)
 
 @app.route("/tweets", methods=["POST"])
@@ -92,7 +94,8 @@ def tweets():
     """
     When A POST request is made to this uri, return tweets in the last minute.
     """
-    results = return_tweets()
+    data = flask.request.json
+    results = return_tweets(data['hrs'])
     return flask.jsonify(results)
 
 #--------- RUN WEB APP SERVER ------------#
