@@ -25,7 +25,7 @@
        //    console.log(result)
        //   }
        // })
-    (function update_map() {
+    // (function update_map() {
       $.ajax({
         type: "POST",
         contentType: "application/json; charset=utf-8",
@@ -38,12 +38,12 @@
         },
         error: function (result) {
           console.log(result)
-        },
-        complete: function () {
-          setTimeout(update_map, 5000)
         }
+        // complete: function () {
+        //   setTimeout(update_map, 5000)
+        // }
       });
-    })();
+    // })();
 
 
 

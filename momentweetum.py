@@ -11,8 +11,8 @@ def return_tweets(hours):
     client = MongoClient()
     db = client.fletcher.tweets
     tweets = {}
-    hrs = hours * 3600
-    min_time = (current_epoch_time - hrs) * 1000
+    seconds = hours * 3600
+    min_time = (current_epoch_time - seconds) * 1000
     query = db.aggregate([{"$match":{"timestamp_ms":{"$gte":min_time}}}])
     # query = db.aggregate([{"$match":{"$text":{"$search":"hillary, clinton"}}}])
     for tweet in query:
