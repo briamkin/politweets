@@ -2,25 +2,31 @@ from __future__ import division
 import flask
 from pymongo import MongoClient
 import time
-from county_geo import county_fips, all_fips
+from county_geo import county_fips, all_fips, fips_pop
 
 #---------- BUILT MOMENTUM MODEL ----------------#
 
-def return_tweets(hours):
+def return_tweets(hours, search_terms):
     current_epoch_time = int(time.time())
     client = MongoClient()
     db = client.fletcher.tweets
     tweets = {}
     seconds = hours * 3600
     min_time = (current_epoch_time - seconds) * 1000
-    query = db.aggregate([{"$match":{timestamp_ms:{"$gte":min_time}}}])
-    # query = db.aggregate([{"$match":{"$text":{"$search":"hillary, clinton"}}}])
+    if search_terms != "":
+        query = db.aggregate([
+            {"$match":{"$text":{"$search":search_terms}}},
+            {"$match":{"timestamp_ms":{"$gte":min_time}}}])
+    else:
+        query = db.aggregate([
+            {"$match":{"timestamp_ms":{"$gte":min_time}}}])
     for tweet in query:
         fips = tweet['fips']
         if fips in tweets:
-            tweets[fips] += 1
+            tweets[fips] += (100000/fips_pop[fips])
         else:
-            tweets[fips] = 1
+            tweets[fips] = (100000/fips_pop[fips])
+
     return tweets
 
 def return_history():
@@ -96,11 +102,11 @@ def tweets():
     When A POST request is made to this uri, return tweets in the last minute.
     """
     data = flask.request.json
-    results = return_tweets(data['hrs'])
+    results = return_tweets(data['hrs'], data['search'])
     return flask.jsonify(results)
 
 #--------- RUN WEB APP SERVER ------------#
 
 # Start the app server on port 80
 # (The default website port)
-app.run(host='0.0.0.0', port=5000)
+app.run(host='0.0.0.0', port=8000)

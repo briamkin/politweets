@@ -25,26 +25,31 @@
        //    console.log(result)
        //   }
        // })
-    // (function update_map() {
+    function update_map(hours, search_terms) {
+      // var py_dict = '{"hrs":' + String(hours) + ', "search": "' + String(search_terms) + '"}';
+      // console.log(py_dict);
+      // var hours = 1
+      // var search_terms = "hillary clinton"
       $.ajax({
         type: "POST",
         contentType: "application/json; charset=utf-8",
         url: "/tweets",
         dataType: "json",
         async: true,
-        // data: "{\"hrs\": 0.5, \"search\":\"\"}",
-        data: "{\"hrs\": 0.5}",
+        data: '{"hrs":' + String(hours) + ', "search":"' + String(search_terms) + '"}',
         success: function (data) {
           console.log(data)
         },
         error: function (result) {
-          console.log(result)
+          console.log("hmm?")
         }
         // complete: function () {
         //   setTimeout(update_map, 5000)
         // }
       });
-    // })();
+    }
+
+    update_map(1000, "");
 
 
 
