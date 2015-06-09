@@ -9,26 +9,26 @@ $.getJSON('json/counties_list.json', function(data){
 	counties_list = object_to_array(data);
 });
 
-var current_graph = 'Rep_Percent';
+// var current_graph = 'Rep_Percent';
 
-var current_object = '';
+// var current_object = '';
 
-var color_list = ['color_purple','color_green','color_orange','color_blue','color_red']
+// var color_list = ['color_purple','color_green','color_orange','color_blue','color_red']
 
-// Determine Number Text Ending
-function number_ender(num) {
-	num = String(num);
-	last = num.substr(num.length - 1);
-	if (last == "1") {
-		return "st";
-	} else if (last == "2") {
-		return "nd";
-	} else if (last== "3") {
-		return "rd";
-	} else {
-		return "th";
-	}
-}
+// // Determine Number Text Ending
+// function number_ender(num) {
+// 	num = String(num);
+// 	last = num.substr(num.length - 1);
+// 	if (last == "1") {
+// 		return "st";
+// 	} else if (last == "2") {
+// 		return "nd";
+// 	} else if (last== "3") {
+// 		return "rd";
+// 	} else {
+// 		return "th";
+// 	}
+// }
 
 // Randomly Shuffle Array
 function shuffle(array) {
@@ -50,52 +50,52 @@ function shuffle(array) {
 	var spinner = new Spinner(spin_opts).spin(target);
 }());
 
-// Create feature-box dropdown
-(function() {
-	$(".feature-box").append('<select id="feature-select"><option val="feature">All</option></select>')
-	for (item of categories.sort()) {
-		$("#feature-select").append("<option val='" + item + "'>" + item.replace("_", " ") + "</option>");
-	}
-}());
+// // Create feature-box dropdown
+// (function() {
+// 	$(".feature-box").append('<select id="feature-select"><option val="feature">All</option></select>')
+// 	for (item of categories.sort()) {
+// 		$("#feature-select").append("<option val='" + item + "'>" + item.replace("_", " ") + "</option>");
+// 	}
+// }());
 
-// Generate features list
-function generate_features() {
-	var labels = {};
-	var new_names = [];
-	var new_labels = [];
-	for (var key in label_info) {
-		labels[label_info[key][0]] = key;
-		new_names.push(label_info[key][0]);
-	}
-	for (name of new_names.sort()) {
-		new_labels.push(labels[name]);
-	}
-	return new_labels;
-};
+// // Generate features list
+// function generate_features() {
+// 	var labels = {};
+// 	var new_names = [];
+// 	var new_labels = [];
+// 	for (var key in label_info) {
+// 		labels[label_info[key][0]] = key;
+// 		new_names.push(label_info[key][0]);
+// 	}
+// 	for (name of new_names.sort()) {
+// 		new_labels.push(labels[name]);
+// 	}
+// 	return new_labels;
+// };
 
-var features = generate_features();
+// var features = generate_features();
 
-// Generate features for .features_list
-(function() {
-	for (item of features ) {
-		var obj_name = item;
-		var classes = "feature";
-		for (category of label_info[obj_name][2]) {
-			classes += " ";
-			classes += category;
-		}
-		var bold = '';
-		if(item == "Rep_Percent"){ bold = "style='font-weight: bold;'"; }
-		$(".features_list").append("<li class='" + classes + "'" + bold + " key=" + item + ">" + label_info[item][0] + "</li>");
-	}
-}());
+// // Generate features for .features_list
+// (function() {
+// 	for (item of features ) {
+// 		var obj_name = item;
+// 		var classes = "feature";
+// 		for (category of label_info[obj_name][2]) {
+// 			classes += " ";
+// 			classes += category;
+// 		}
+// 		var bold = '';
+// 		if(item == "Rep_Percent"){ bold = "style='font-weight: bold;'"; }
+// 		$(".features_list").append("<li class='" + classes + "'" + bold + " key=" + item + ">" + label_info[item][0] + "</li>");
+// 	}
+// }());
 
-// Change title based on current_object
-function change_title() {
-  var new_title = label_info[current_graph][0];
-  var scales = ($('input[name=scales]:checked').val())
-  $("#graph-title").text(new_title + " (" + scales + "d)");
-}
+// // Change title based on current_object
+// function change_title() {
+//   var new_title = label_info[current_graph][0];
+//   var scales = ($('input[name=scales]:checked').val())
+//   $("#graph-title").text(new_title + " (" + scales + "d)");
+// }
 
 // Get high and low of current graph
 function get_high_low() {
