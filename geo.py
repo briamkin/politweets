@@ -35,13 +35,13 @@ def find_nested(nested_list):
         nest = 0
     return nest
 
-def find_county(point, full=0):
+def find_county(point, full=0, neighbors=5, all=0):
     """Given a long/lat point in the United States return a
     corresponding FIPS ID"""
 
     # load, run KD Tree, and return 5 nearest points
     county_tree = joblib.load('geo_tree/county_tree.pkl')
-    dist, indices = county_tree.query(point, k=5)
+    dist, indices = county_tree.query(point, k=neighbors)
     fips_list = []
     for index in indices[0]:
 
@@ -52,32 +52,49 @@ def find_county(point, full=0):
         except:
             pass
 
-    # set default values for return
-    fips = fips_list[0]
+    # if ALL is not set, return top hit
+    # else return all nearest neighbors
+    if all == 0:
+        # set default values for return
+        fips = fips_list[0]
 
-    # Find which path it exists in
-    if len(fips_list) > 0:
-        for fips_num in fips_list:
-            county_paths = all_county_boundaries[str(fips_num)]
-            if find_nested(county_paths) == 0:
-                if in_polygon(point, county_paths):
-                    fips = fips_num
-                    break
-            else:
-                for path in county_paths:
-                    if in_polygon(point, path):
+        # Find which path it exists in
+        if len(fips_list) > 0:
+            for fips_num in fips_list:
+                county_paths = all_county_boundaries[str(fips_num)]
+                if find_nested(county_paths) == 0:
+                    if in_polygon(point, county_paths):
                         fips = fips_num
                         break
+                else:
+                    for path in county_paths:
+                        if in_polygon(point, path):
+                            fips = fips_num
+                            break
 
-    # Point is most likely outside of  AUS, return None
-    if dist[0][0] > 6:
-        return None
-
-    # If point is near but not in county, return nearest county
-    if full == 1:
-        try:
-            return [fips,county_fips[int(fips)][1],county_fips[int(fips)][0]]
-        except:
+        # Point is most likely outside of  AUS, return None
+        if dist[0][0] > 6:
             return None
+
+        # If point is near but not in county, return nearest county
+        if full == 1:
+            try:
+                return [fips,county_fips[int(fips)][1],county_fips[int(fips)][0]]
+            except:
+                return None
+        else:
+            return fips
+
     else:
-        return fips
+        if full == 1:
+            try:
+                full_list = []
+                for county in fips_list:
+                    full_name = [county,county_fips[int(county)][1],county_fips[int(county)][0]]
+                    full_list.append(full_name)
+                return full_list
+            except:
+                return None
+        else:
+            return fips_list
+
