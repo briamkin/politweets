@@ -2,7 +2,7 @@ from __future__ import division
 import flask
 from pymongo import MongoClient
 import time
-from county_geo import county_fips, all_fips, fips_pop
+from county_geo import *
 
 #---------- BUILT MOMENTUM MODEL ----------------#
 
@@ -28,6 +28,22 @@ def return_tweets(hours, search_terms):
             tweets[fips] = (100000/fips_pop[fips])
 
     return tweets
+
+def tweet_booststrapper(dict, n=0):
+    bs_dict = {}
+    for key in dict:
+        volume = dict[key]
+        new_vol = volume*15
+        multiplier = 10
+        for county in nearest_counties[key]:
+            new_vol += (dict[county]*multiplier)
+            index -= 1
+        new_vol /= ((volume*15)+55)
+        bs_dict[key] = new_vol
+    if n > 0:
+        n -= 1
+        tweet_booststrapper(bs_dict, n)
+    return bs_dict
 
 def return_history():
     current_time = int(time.time())
