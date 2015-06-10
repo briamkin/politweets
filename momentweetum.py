@@ -31,8 +31,11 @@ def return_tweets(hours, search_terms):
 
 def tweet_booststrapper(dict, n=0):
     bs_dict = {}
-    for key in dict:
-        volume = dict[key]
+    for key in all_fips:
+        try:
+            volume = dict[key]
+        except:
+            volume = 0
         new_vol = volume*15
         multiplier = 10
         for county in nearest_counties[key]:
@@ -40,9 +43,9 @@ def tweet_booststrapper(dict, n=0):
             index -= 1
         new_vol /= ((volume*15)+55)
         bs_dict[key] = new_vol
-    if n > 0:
-        n -= 1
-        tweet_booststrapper(bs_dict, n)
+    # if n > 0:
+    #     n -= 1
+    #     return tweet_booststrapper(bs_dict, n)
     return bs_dict
 
 def return_history():
@@ -118,11 +121,13 @@ def tweets():
     When A POST request is made to this uri, return tweets in the last minute.
     """
     data = flask.request.json
-    results = return_tweets(data['hrs'], data['search'])
+    tweets = return_tweets(data['hrs'], data['search'])
+    # results = tweet_booststrapper(tweets)
+    results = tweets
     return flask.jsonify(results)
 
 #--------- RUN WEB APP SERVER ------------#
 
 # Start the app server on port 80
 # (The default website port)
-app.run(host='0.0.0.0', port=8000)
+app.run(host='0.0.0.0', port=5000)
