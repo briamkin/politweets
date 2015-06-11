@@ -6,30 +6,19 @@
   </head>
   <body>
     <h1>TEST</h1>
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-    <script src="http://d3js.org/d3.v3.min.js"></script>
-
+    <script src="static/jquery.min.js"></script>
+    <script src="static/d3.min.js"></script>
+    //<!--<script src="static/main.js"></script>//-->
     <script>
+      Object.size = function(obj) {
+          var size = 0, key;
+          for (key in obj) {
+              if (obj.hasOwnProperty(key)) size++;
+          }
+          return size;
+      };
 
-       // $.ajax({
-       //   type: "POST",
-       //   contentType: "application/json; charset=utf-8",
-       //   url: "/momentum",
-       //   dataType: "json",
-       //   async: true,
-       //   data: false,
-       //   success: function (data) {
-       //     console.log(data)
-       //   },
-       //   error: function (result) {
-       //    console.log(result)
-       //   }
-       // })
     function update_map(hours, search_terms) {
-      // var py_dict = '{"hrs":' + String(hours) + ', "search": "' + String(search_terms) + '"}';
-      // console.log(py_dict);
-      // var hours = 1
-      // var search_terms = "hillary clinton"
       $.ajax({
         type: "POST",
         contentType: "application/json; charset=utf-8",
@@ -37,7 +26,9 @@
         dataType: "json",
         async: true,
         data: '{"hrs":' + String(hours) + ', "search":"' + String(search_terms) + '"}',
+        // data: '{"hrs":' + String(30) + ', "search":"' + String("nba, cavs, warriors, finals") + '"}',
         success: function (data) {
+          console.log(Object.size(data))
           console.log(data)
         },
         error: function (result) {
@@ -49,9 +40,29 @@
       });
     }
 
-    update_map(1000, "");
-
-
+    // update_map(1000, "nba, cavs, warriors, finals");
+    function update_candidates(hours) {
+      $.ajax({
+        type: "POST",
+        contentType: "application/json; charset=utf-8",
+        url: "/candidates",
+        dataType: "json",
+        async: true,
+        // data: '{"hrs":' + String(1000) + '"}',
+        // data: '{"hrs":' + String(30) + ', "search":"' + String("nba, cavs, warriors, finals") + '"}',
+        success: function (data) {
+          console.log(Object.size(data))
+          console.log(data)
+        },
+        error: function (result) {
+          console.log("hmm?")
+        }
+        // complete: function () {
+        //   setTimeout(update_map, 5000)
+        // }
+      });
+    }
+    update_candidates(1000)
 
     </script>
   </body>
