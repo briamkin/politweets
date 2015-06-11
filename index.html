@@ -48,7 +48,7 @@
         url: "/candidates",
         dataType: "json",
         async: true,
-        // data: '{"hrs":' + String(1000) + '"}',
+        data: '{"hrs":' + String(hours) + '"}',
         // data: '{"hrs":' + String(30) + ', "search":"' + String("nba, cavs, warriors, finals") + '"}',
         success: function (data) {
           console.log(Object.size(data))
@@ -62,7 +62,7 @@
         // }
       });
     }
-    update_candidates(1000)
+    update_candidates(100)
 
     </script>
   </body>
