@@ -89,14 +89,15 @@ def tweet_booststrapper(dict, n=0):
         return tweet_booststrapper(bs_dict, n)
     return bs_dict
 
+
 def get_all_candidates(time, n=0):
     candidate_search = { "Lincoln Chafee" : "lincolnchafee chafee teamchafee teamlincolnchafee chafee2016 lincolnchafee2016 chafeeforpresident chafee4president",  "Hillary Clinton" : "hillaryclinton hillary teamhillary teamclinton teamhillaryclinton hillary2016 clinton2016 hillaryclinton2016 hillaryforamerica hillary4america hillaryforpresident hillary4president",  "Martin O'Malley" : "governoromalley martinomalley teamomalley teammartinomalley omalley2016 martinomalley2016 omalley4president omalleyforpresident",  "Bernie Sanders" : "berniesanders sensanders teambernie teamberniesanders bernie2016 sanders2016 berniesanders2016 sanders4president sandersforpresident bernie4president bernieforpresident berniesanderse4president berniesanderseforpresident",  "Ben Carson" : "realbencarson bencarson drbencarson teamcarson teambencarson bencarson2016 carson2016 carson4president carsonforpresident bencarson4president bencarsonforpresident",  "Ted Cruz" : "tedcruz sentedcruz teamcruz teamtedcruz tedcruz2016 cruzcrew cruz4president cruzforpresident tedcruz4president tedcruzforpresident",  "Carly Fiorina" : "carlyfiorina fiorina teamcarly teamfiorina teamcarlyfiorina carly2016 carly4president carlyforpresident carlyfiorina4president carlyfiorinaforpresident fiorina4president fiorinaforpresident",  "Lindsey Graham" : "linseygrahamsc lindseygraham grahamblog senlindseygraham teamgraham teamlindseygraham graham2016 lindseygraham2016 graham4president grahamforpresident lindseygraham4president lindseygrahamforpresident",  "George Pataki" : "governorpataki govpataki pataki georgepataki pataki4president patakiforpresident georgepataki4president georgepatakiforpresident teampataki",  "Rand Paul" : "randpaul drrandpaul senatorrandpaul teamrand teamrandpaul randpaul2016 rand2016 standwithrand rand4president randforpresident paul4president paulforpresident randpaul4president randpaulforpresident",  "Rick Perry" : "governorperry rickperry teamrickperry perry2016 rickperry2016 perry4president perryforpresident rickperry4president rickperryforpresident",  "Marco Rubio" : "marcorubio rubio2016 marcorubio2016 teammarco teammarcorubio marco4president marcoforpresident rubio4president rubioforpresident marcorubio4president marcorubioforpresident",  "Rick Santorum" : "ricksantorum santorum2016 teamsantorum teamricksantorum santorum4president santorumforpresident ricksantorum4president ricksantorumforpresident",  "Mike Huckabee" : "govmikehuckabee mikehuckabee teamhuckabee teammikehuckabee huckabee2016 mikehuckabee2016 huckaboom huckabee4president huckabeeforpresident mikehuckabee4president mikehuckabeeforpresident",  "Jeb Bush" : "jebbush  teamjeb teamjebbush jeb2016 bush2016 jebbush2016 jeb jeb4president jebforpresident jebbush4president jebbushforpresident",  "Scott Walker" : "scottwalker teamscottwalker scottwalker2016 walker4president walkerforpresident scottwalker4president scottwalkerforpresident" }
     candidate_tweets = {}
     candidate_totals = {}
     for key in candidate_search:
-        total_sent_volume = 0
         total_volume = 0
         total_sentiment = 0
+        total_sent_vol = 0
         search_terms = candidate_search[key]
         tweets = return_tweets(time, search_terms)
         boosted_tweets = tweet_booststrapper(tweets,n)
@@ -104,14 +105,14 @@ def get_all_candidates(time, n=0):
         for county in boosted_tweets:
             county_volume = boosted_tweets[county]['volume']
             county_sentiment = boosted_tweets[county]['sentiment']
-            if county_sentiment != 0:
-                total_sent_volume += county_volume
             total_volume += county_volume
-            total_sentiment += (county_volume*county_sentiment)
+            if county_sentiment != None:
+                total_sentiment += (county_volume*county_sentiment)
+                total_sent_vol += county_volume
         candidate_totals[key] = {}
         try:
             candidate_totals[key]['volume'] = total_volume
-            candidate_totals[key]['sentiment'] = total_sentiment/total_sent_volume
+            candidate_totals[key]['sentiment'] = total_sentiment/total_sent_vol
         except:
             candidate_totals[key]['volume'] = 0
             candidate_totals[key]['sentiment'] = 0
