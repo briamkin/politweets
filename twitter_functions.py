@@ -62,7 +62,7 @@ def tweet_booststrapper(dict, n=0):
                 pass
             multiplier -= 1
         if volume > 0:
-            if volume < 100
+            if volume < 100:
                 fraction = 0.95*math.log(volume)/2
                 new_vol= (volume*fraction)+((new_vol/55)*(1-fraction))
             else:
