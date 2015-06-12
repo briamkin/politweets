@@ -8,7 +8,7 @@
     <h1>TEST</h1>
     <script src="static/jquery.min.js"></script>
     <script src="static/d3.min.js"></script>
-    //<!--<script src="static/main.js"></script>//-->
+    <!--<script src="static/main.js"></script>//-->
     <script>
       Object.size = function(obj) {
           var size = 0, key;
@@ -40,7 +40,8 @@
       });
     }
 
-    // update_map(1000, "nba, cavs, warriors, finals");
+    update_map(100, "jurassic");
+
     function update_candidates(hours) {
       $.ajax({
         type: "POST",
@@ -62,7 +63,7 @@
         // }
       });
     }
-    update_candidates(100)
+    update_candidates(1000)
 
     </script>
   </body>

@@ -40,9 +40,9 @@ def tweets():
     """
     data = flask.request.json
     tweets = return_tweets(data['hrs'], data['search'])
-    results = tweet_booststrapper(tweets)
+    # results = tweet_booststrapper(tweets)
     # results = get_all_candidates(1000)
-    return flask.jsonify(results)
+    return flask.jsonify(tweets)
 
 @app.route("/candidates", methods=["POST"])
 def candidates():
