@@ -50,14 +50,19 @@ def tweet_booststrapper(dict, n=0):
             sentiment = dict[key]['sentiment']
         except:
             volume = 0
-            sentiment = 0
+            sentiment = None
         new_vol = 0
-        new_sent = sentiment*15*volume
+        sent_vol = 0
+        if sentiment != None:
+            new_sent = sentiment*15*volume
+        else:
+            new_sent = 0
         multiplier = 10
         for county in nearest_counties[key]:
             try:
                 new_vol += (dict[county]['volume']*multiplier)
-                new_sent += (dict[sentiment]['sentiment']*multiplier*dict[county]['volume'])
+                new_sent += (dict[county]['sentiment']*multiplier*dict[county]['volume'])
+                sent_vol += multiplier
             except:
                 pass
             multiplier -= 1
@@ -65,11 +70,17 @@ def tweet_booststrapper(dict, n=0):
             if volume < 100:
                 fraction = 0.95*math.log(volume)/2
                 new_vol= (volume*fraction)+((new_vol/55)*(1-fraction))
+                new_sent = (sentiment*fraction)+((new_sent/((volume*15)+sent_vol))*(1-fraction))
             else:
                 new_vol = (volume*0.95)+((new_vol/55)*0.05)
+                new_sent = (sentiment*0.95)+((new_sent/((volume*15)+sent_vol))*0.05)
         else:
             new_vol = new_vol/55
-        new_sent = new_sent / ((volume*15)+55)
+            denom = (volume*15)+sent_vol
+            if denom != 0:
+                new_sent = new_sent/denom
+            else:
+                new_sent = None
         bs_dict[key] = {}
         bs_dict[key]['volume'] = new_vol
         bs_dict[key]['sentiment'] = new_sent
