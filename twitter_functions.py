@@ -23,18 +23,16 @@ def return_tweets(day, search_terms="", all_results=0):
             {"$match":{"timestamp_ms":{"$gte":start_time,"$lt":end_time}}}])
     else:
         query = db.aggregate([
-            {"$match":{"timestamp_ms":{"$gte":min_time,"$lt":end_time}}}])
+            {"$match":{"timestamp_ms":{"$gte":start_time,"$lt":end_time}}}])
     for tweet in query:
         fips = tweet['fips']
         if fips in tweets:
-            # tweets[fips] += (100000/fips_pop[fips])
             tweets[fips]['volume'] += 1
             try:
                 tweets[fips]['sentiment'] += tweet['sentiment']['compound']
             except:
                 pass
         else:
-            # tweets[fips] = (100000/fips_pop[fips])
             tweets[fips] = {}
             tweets[fips]['volume'] = 1
             try:
@@ -47,7 +45,7 @@ def return_tweets(day, search_terms="", all_results=0):
     return tweets
 
 def tweet_booststrapper(dict, n=0):
-    bs_dict = {}
+    bootstrap_dict = {}
     for key in all_fips:
         try:
             volume = dict[key]['volume']
@@ -55,43 +53,32 @@ def tweet_booststrapper(dict, n=0):
         except:
             volume = 0
             sentiment = None
-        new_vol = 0
-        sent_vol = 0
-        if sentiment != None:
-            new_sent = sentiment*15*volume
-        else:
-            new_sent = 0
-        multiplier = 10
-        for county in nearest_counties[key]:
-            try:
-                new_vol += (dict[county]['volume']*multiplier)
-                new_sent += (dict[county]['sentiment']*multiplier*dict[county]['volume'])
-                sent_vol += multiplier
-            except:
-                pass
-            multiplier -= 1
-        if volume > 0:
-            if volume < 100:
-                fraction = 0.95*math.log(volume)/2
-                new_vol= (volume*fraction)+((new_vol/55)*(1-fraction))
-                new_sent = (sentiment*fraction)+((new_sent/((volume*15)+sent_vol))*(1-fraction))
+        if volume < 100:
+            new_sent, new_vol, weight, new_mult = 0, 0, 10, 0
+            for county in nearest_counties[key]:
+                try:
+                    vol = dict[county]['volume']*weight
+                    new_vol += vol
+                    new_sent += dict[county]['sentiment']*multiplier
+                    new_mult += multiplier
+                except:
+                    pass
+                weight -= 1
+            new_vol = (volume*(volume/100))+((new_vol/55)*((100-volume)/100))
+            if new_mult > 0:
+                new_sent = (volume*(volume/100))+((new_sent/new_mult)*((100-volume)/100))
             else:
-                new_vol = (volume*0.95)+((new_vol/55)*0.05)
-                new_sent = (sentiment*0.95)+((new_sent/((volume*15)+sent_vol))*0.05)
+                new_sent = sentiment
         else:
-            new_vol = new_vol/55
-            denom = (volume*15)+sent_vol
-            if denom != 0:
-                new_sent = new_sent/denom
-            else:
-                new_sent = None
-        bs_dict[key] = {}
-        bs_dict[key]['volume'] = new_vol
-        bs_dict[key]['sentiment'] = new_sent
+            new_vol = volume
+            new_sent = sentiment
+        bootstrap_dict[key] = {}
+        bootstrap_dict[key]['volume'] = new_vol
+        bootstrap_dict[key]['sentiment'] = new_sent
     if n > 0:
         n -= 1
-        return tweet_booststrapper(bs_dict, n)
-    return bs_dict
+        return tweet_booststrapper(bootstrap_dict, n)
+    return bootstrap_dict
 
 
 def get_all_candidates(time=0, n=0, all_results=0):
