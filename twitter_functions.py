@@ -109,3 +109,9 @@ def get_all_candidates(time=0, n=0, all_results=0):
             candidate_totals[key]['sentiment'] = 0
     all_data = {"total" : candidate_totals, "county" : candidate_tweets}
     return all_data
+
+def get_all_candidates_daily(time=1):
+    day_array = {}
+    for x in range(time):
+        day_array[x] = get_all_candidates(x)
+    return day_array

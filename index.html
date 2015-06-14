@@ -6,6 +6,7 @@
   </head>
   <body>
     <h1>TEST</h1>
+    <div id="canvas"></div>
     <script src="static/jquery.min.js"></script>
     <script src="static/d3.min.js"></script>
     <!--<script src="static/main.js"></script>//-->
@@ -40,7 +41,7 @@
       });
     }
 
-    update_map(100, "jurassic");
+    // update_map(100, "jurassic");
 
     function update_candidates(hours) {
       $.ajax({
@@ -52,8 +53,18 @@
         data: '{"hrs":' + String(hours) + '"}',
         // data: '{"hrs":' + String(30) + ', "search":"' + String("nba, cavs, warriors, finals") + '"}',
         success: function (data) {
-          console.log(Object.size(data))
-          console.log(data)
+          // console.log(Object.size(data))
+          // console.log(data)
+          for (var i in data) {
+            if (data.hasOwnProperty(i)) {
+              $("#canvas").append("<div candidate='" + i + "'><b>" + "Day: " + i + "</b></div>")
+              for (var key in data[i]['total']) {
+                if(data[i]['total'].hasOwnProperty(key)) {
+                  $("#canvas").append("<div candidate='" + key + "'>" + key + ": " + data[i]['total'][key]['volume'] + "</div>")
+                }
+              }
+            }
+          }
         },
         error: function (result) {
           console.log("hmm?")
