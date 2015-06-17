@@ -5,7 +5,7 @@ import time
 from county_geo import *
 from twitter_functions import *
 import math
-from datetime import date
+from datetime import date, timedelta
 import re
 from collections import defaultdict
 from gensim.models.ldamodel import LdaModel
@@ -118,13 +118,40 @@ def get_all_candidates(time=0, n=0, all_results=0):
     all_data = {"total" : candidate_totals, "county" : candidate_tweets}
     return all_data
 
+def get_candidates_js_object(time=0, n=0):
+    candidates_object = []
+    js_date = date.today() - timedelta(time)
+    js_date = js_date.strftime('%Y-%m-%d')
+    for key in candidate_search:
+        total_volume = 0
+        total_sent_vol = 0
+        search_terms = candidate_search[key]
+        tweets = return_tweets(time, search_terms)
+        boosted_tweets = tweet_booststrapper(tweets,n)
+        candidate_dict = { "value" : key, "date" : js_date }
+        for county in boosted_tweets:
+            county_volume = boosted_tweets[county]['volume']
+            total_volume += county_volume
+        try:
+            candidate_dict['volume'] = total_volume
+        except:
+            candidate_dict['volume'] = 0
+        candidates_object.append(candidate_dict)
+    return candidates_object
+
 def get_all_candidates_daily(time=1):
     day_array = {}
     for x in range(time):
         day_array[x] = get_all_candidates(x)
     return day_array
 
-def get_topics(n=1, candidate):
+def get_all_candidates_js_objects(time=1):
+    all_candidates_object = []
+    for x in range(time):
+        all_candidates_object += get_candidates_js_object(x)
+    return all_candidates_object
+
+def get_topics(n, candidate):
     client = MongoClient()
     tweets = client.fletcher.tweets
     tweets = tweets.aggregate([{"$match":{"$text":{"$search":candidate_search[candidate]}}}])
