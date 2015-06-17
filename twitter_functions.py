@@ -144,3 +144,30 @@ def get_topics(n=1, candidate):
     dictionary = corpora.Dictionary(texts)
     lda = LdaModel(corpus=corpus, id2word=dictionary, num_topics=n, update_every=1, chunksize=10000, passes=10)
     return lda.print_topics(n)
+
+def get_topic_dictionary(candidate):
+    client = MongoClient()
+    tweets = client.fletcher.tweets
+    tweets = tweets.aggregate([{"$match":{"$text":{"$search":candidate_search[candidate]}}}])
+    documents = []
+    pattern = re.compile("[^a-zA-Z ]")
+    for tweet in tweets:
+        documents.append(pattern.sub('', tweet['text']))
+    stoplist = set(candidate_stop_words[candidate] + stopwords)
+    texts = [[word for word in document.lower().split() if word not in stoplist]
+            for document in documents]
+    frequency = defaultdict(int)
+    for text in texts:
+        for token in text:
+            frequency[token] += 1
+    texts = [[token for token in text if frequency[token] > 1]
+            for text in texts]
+    dictionary = corpora.Dictionary(texts)
+    topics = []
+    for item in dictionary.items():
+        topics.append({"text" : item[1], "size" : item[0]})
+    return topic
+
+
+
+
