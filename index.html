@@ -48,52 +48,91 @@
 
     <script src="static/jquery.min.js"></script>
     <script src="static/d3.min.js"></script>
+    <script src="static/d3.cloud.js"></script>
     <!--<script src="static/main.js"></script>//-->
     <script>
-      var parseDate = d3.time.format("%Y-%m-%d").parse,
-          formatDate = function(d) { return d.getFullYear() + "/" + d.getMonth() + "/" + d.getDate(); };
 
-      var margin = {top: 10, right: 20, bottom: 20, left: 80},
-          width = 1100 - margin.left - margin.right,
-          height = 500 - margin.top - margin.bottom;
+    var parseDate = d3.time.format("%Y-%m-%d").parse,
+        formatDate = function(d) { return d.getFullYear() + "/" + d.getMonth() + "/" + d.getDate(); };
 
-      var y0 = d3.scale.ordinal()
-          .rangeRoundBands([height, 0], .2);
+    var margin = {top: 10, right: 20, bottom: 20, left: 80},
+        width = 1100 - margin.left - margin.right,
+        height = 500 - margin.top - margin.bottom;
 
-      var y1 = d3.scale.linear();
+    var y0 = d3.scale.ordinal()
+        .rangeRoundBands([height, 0], .2);
 
-      var x = d3.scale.ordinal()
-          .rangeRoundBands([0, width], .1, 0);
+    var y1 = d3.scale.linear();
 
-      var xAxis = d3.svg.axis()
-          .scale(x)
-          .orient("bottom")
-          .tickFormat(formatDate);
+    var x = d3.scale.ordinal()
+        .rangeRoundBands([0, width], .1, 0);
 
-      var nest = d3.nest()
-          .key(function(d) { return d.group; });
+    var xAxis = d3.svg.axis()
+        .scale(x)
+        .orient("bottom")
+        .tickFormat(formatDate);
 
-      var stack = d3.layout.stack()
-          .values(function(d) { return d.values; })
-          .x(function(d) { return parseDate(d.date); })
-          .y(function(d) { return d.value; })
-          .out(function(d, y0) { d.valueOffset = y0; });
+    var nest = d3.nest()
+        .key(function(d) { return d.group; });
 
-      var color = d3.scale.category10();
+    var stack = d3.layout.stack()
+        .values(function(d) { return d.values; })
+        .x(function(d) { return parseDate(d.date); })
+        .y(function(d) { return d.value; })
+        .out(function(d, y0) { d.valueOffset = y0; });
 
-      var svg = d3.select("body").append("svg")
-          .attr("width", width + margin.left + margin.right)
-          .attr("height", height + margin.top + margin.bottom)
-        .append("g")
-          .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    var color = d3.scale.category10();
 
-      Object.size = function(obj) {
-          var size = 0, key;
-          for (key in obj) {
-              if (obj.hasOwnProperty(key)) size++;
-          }
-          return size;
-      };
+    var svg = d3.select("body").append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    Object.size = function(obj) {
+        var size = 0, key;
+        for (key in obj) {
+            if (obj.hasOwnProperty(key)) size++;
+        }
+        return size;
+    };
+
+    function create_stacks(data) {
+      var dataByGroup = nest.entries(data);
+      stack(dataByGroup);
+      x.domain(dataByGroup[0].values.map(function(d) { return parseDate(d.date); }));
+      y0.domain(dataByGroup.map(function(d) { return d.key; }));
+      y1.domain([0, d3.max(data, function(d) { return d.value; })]).range([y0.rangeBand(), 0]);
+
+      var group = svg.selectAll(".group")
+          .data(dataByGroup)
+        .enter().append("g")
+          .attr("class", "group")
+          .attr("transform", function(d) { return "translate(0," + y0(d.key) + ")"; });
+
+      group.append("text")
+          .attr("class", "group-label")
+          .attr("x", -5)
+          .attr("y", function(d) { return y1(d.values[0].value / 2); })
+          .attr("dy", ".35em")
+          .text(function(d) { return d.key; });
+
+      group.selectAll("rect")
+          .data(function(d) { return d.values; })
+        .enter().append("rect")
+          .style("fill", function(d) { return color(d.group); })
+          // .attr("candidate", function(d) { return d.key; })
+          // .attr("date", function(d) { return d.date; })
+          .attr("x", function(d) { return x(parseDate(d.date)); })
+          .attr("y", function(d) { return y1(d.value); })
+          .attr("width", x.rangeBand())
+          .attr("height", function(d) { return y0.rangeBand() - y1(d.value); });
+
+      group.filter(function(d, i) { return !i; }).append("g")
+          .attr("class", "x axis")
+          .attr("transform", "translate(0," + y0.rangeBand() + ")")
+          .call(xAxis);
+    }
 
     function update_map(hours, search_terms) {
       $.ajax({
@@ -119,53 +158,19 @@
 
     // update_map(100, "jurassic");
 
-    function update_candidates(hours) {
+    function update_candidates() {
       $.ajax({
         type: "POST",
         contentType: "application/json; charset=utf-8",
         url: "/candidates",
         dataType: "json",
         async: true,
-        data: '{"hrs":' + String(hours) + '"}',
+        // data: '{"hrs":' + String(hours) + '"}',
         // data: '{"hrs":' + String(30) + ', "search":"' + String("nba, cavs, warriors, finals") + '"}',
         success: function (results) {
           data = results['data'];
           console.log(data)
-          var dataByGroup = nest.entries(data);
-          stack(dataByGroup);
-          x.domain(dataByGroup[0].values.map(function(d) { return parseDate(d.date); }));
-          y0.domain(dataByGroup.map(function(d) { return d.key; }));
-          y1.domain([0, d3.max(data, function(d) { return d.value; })]).range([y0.rangeBand(), 0]);
-
-          var group = svg.selectAll(".group")
-              .data(dataByGroup)
-            .enter().append("g")
-              .attr("class", "group")
-              .attr("transform", function(d) { return "translate(0," + y0(d.key) + ")"; });
-
-          group.append("text")
-              .attr("class", "group-label")
-              .attr("x", -5)
-              .attr("y", function(d) { return y1(d.values[0].value / 2); })
-              .attr("dy", ".35em")
-              .text(function(d) { return d.key; });
-
-          group.selectAll("rect")
-              .data(function(d) { return d.values; })
-            .enter().append("rect")
-              .style("fill", function(d) { return color(d.group); })
-              // .attr("candidate", function(d) { return d.key; })
-              // .attr("date", function(d) { return d.date; })
-              .attr("x", function(d) { return x(parseDate(d.date)); })
-              .attr("y", function(d) { return y1(d.value); })
-              .attr("width", x.rangeBand())
-              .attr("height", function(d) { return y0.rangeBand() - y1(d.value); });
-
-          group.filter(function(d, i) { return !i; }).append("g")
-              .attr("class", "x axis")
-              .attr("transform", "translate(0," + y0.rangeBand() + ")")
-              .call(xAxis);
-
+          create_stacks(data)
         },
         error: function (result) {
           console.log("hmm?")
@@ -176,6 +181,74 @@
       });
     }
     update_candidates(1000)
+
+    function generate_word_cloud(data) {
+      var fill = d3.scale.category20();
+      d3.layout.cloud().size([1000, 1000])
+          .words(data)
+          .padding(5)
+          .rotate(function() { return ~~(Math.random() * 2) * 90; })
+          .font("Impact")
+          .fontSize(function(d) { return d.size; })
+          .on("end", draw)
+          .start();
+      // var layout = cloud()
+            // .size([960, 600])
+            // .timeInterval(10)
+            // .text(function(d) { return d.key; })
+            // .font("Impact")
+            // .fontSize(function(d) { return fontSize(+d.value); })
+            // .rotate(function(d) { return ~~(Math.random() * 5) * 30 - 60; })
+            // .padding(1)
+            // .on("word", progress)
+            // .on("end", draw)
+            // .words(data)
+            // .start();
+      function draw(words) {
+        d3.select("body").append("svg")
+            .attr("width", 1000)
+            .attr("height", 1000)
+          .append("g")
+            .attr("transform", "translate(150,150)")
+          .selectAll("text")
+            .data(words)
+          .enter().append("text")
+            .style("font-size", function(d) { return d.size + "px"; })
+            .style("font-family", "Impact")
+            .style("fill", function(d, i) { return fill(i); })
+            .attr("text-anchor", "middle")
+            .attr("transform", function(d) {
+              return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+            })
+            .text(function(d) { return d.text; });
+      }
+    }
+
+    function create_word_cloud() {
+      $.ajax({
+        type: "POST",
+        contentType: "application/json; charset=utf-8",
+        url: "/wordcloud",
+        dataType: "json",
+        async: true,
+        // data: '{"hrs":' + String(hours) + '"}',
+        // data: '{"hrs":' + String(30) + ', "search":"' + String("nba, cavs, warriors, finals") + '"}',
+        success: function (results) {
+          // console.log(results)
+          data = results['data'];
+          generate_word_cloud(data);
+          // console.log(data)
+          // create_stacks(data)
+        },
+        error: function (result) {
+          console.log("hmm?")
+        }
+        // complete: function () {
+        //   setTimeout(update_map, 5000)
+        // }
+      });
+    }
+    // create_word_cloud();
 
     </script>
   </body>

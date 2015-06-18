@@ -22,16 +22,17 @@ def home():
         return file.read()
 
 # Get an example and return it's score from the predictor model
-@app.route("/county", methods=["POST"])
-def county():
+@app.route("/wordcloud", methods=["POST"])
+def wordcloud():
     """
     When A POST request is made to this uri, return the momentum.
     """
 
     # Put the result in a nice dict so we can send it as json
     # results = find_momentum()
-    results = return_history()
-    return flask.jsonify(results)
+    topics = { 'data' : get_topic_dictionary("Hillary Clinton") }
+    # topics = { 'data' : [{"size":50, "text":"hillary"}, {"size":100, "text":"clinton"}, {"size":24, "text":"test"}]}
+    return flask.jsonify(topics)
 
 @app.route("/tweets", methods=["POST"])
 def tweets():
