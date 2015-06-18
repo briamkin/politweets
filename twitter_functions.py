@@ -128,14 +128,14 @@ def get_candidates_js_object(time=0, n=0):
         search_terms = candidate_search[key]
         tweets = return_tweets(time, search_terms)
         boosted_tweets = tweet_booststrapper(tweets,n)
-        candidate_dict = { "value" : key, "date" : js_date }
+        candidate_dict = { "group" : key, "date" : js_date }
         for county in boosted_tweets:
             county_volume = boosted_tweets[county]['volume']
             total_volume += county_volume
         try:
-            candidate_dict['volume'] = total_volume
+            candidate_dict['value'] = total_volume
         except:
-            candidate_dict['volume'] = 0
+            candidate_dict['value'] = 0
         candidates_object.append(candidate_dict)
     return candidates_object
 

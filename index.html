@@ -11,7 +11,7 @@
       font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
       margin: auto;
       position: relative;
-      width: 960px;
+      width: 1100px;
     }
 
     text {
@@ -39,11 +39,12 @@
       top: 10px;
     }
 
+    g.group {
+      cursor: pointer;
+    }
+
     </style>
-    <form>
-      <label><input type="radio" name="mode" value="multiples" checked> Multiples</label>
-      <label><input type="radio" name="mode" value="stacked"> Stacked</label>
-    </form>
+
 
     <script src="static/jquery.min.js"></script>
     <script src="static/d3.min.js"></script>
@@ -52,8 +53,8 @@
       var parseDate = d3.time.format("%Y-%m-%d").parse,
           formatDate = function(d) { return d.getFullYear() + "/" + d.getMonth() + "/" + d.getDate(); };
 
-      var margin = {top: 10, right: 20, bottom: 20, left: 60},
-          width = 960 - margin.left - margin.right,
+      var margin = {top: 10, right: 20, bottom: 20, left: 80},
+          width = 1100 - margin.left - margin.right,
           height = 500 - margin.top - margin.bottom;
 
       var y0 = d3.scale.ordinal()
@@ -67,14 +68,14 @@
       var xAxis = d3.svg.axis()
           .scale(x)
           .orient("bottom")
-          .tickFormat(parseDate);
+          .tickFormat(formatDate);
 
       var nest = d3.nest()
           .key(function(d) { return d.group; });
 
       var stack = d3.layout.stack()
           .values(function(d) { return d.values; })
-          .x(function(d) { return d.date; })
+          .x(function(d) { return parseDate(d.date); })
           .y(function(d) { return d.value; })
           .out(function(d, y0) { d.valueOffset = y0; });
 
@@ -128,11 +129,11 @@
         data: '{"hrs":' + String(hours) + '"}',
         // data: '{"hrs":' + String(30) + ', "search":"' + String("nba, cavs, warriors, finals") + '"}',
         success: function (results) {
-          // console.log(Object.size(data))
           data = results['data'];
+          console.log(data)
           var dataByGroup = nest.entries(data);
           stack(dataByGroup);
-          x.domain(dataByGroup[0].values.map(function(d) { return d.date; }));
+          x.domain(dataByGroup[0].values.map(function(d) { return parseDate(d.date); }));
           y0.domain(dataByGroup.map(function(d) { return d.key; }));
           y1.domain([0, d3.max(data, function(d) { return d.value; })]).range([y0.rangeBand(), 0]);
 
@@ -144,16 +145,18 @@
 
           group.append("text")
               .attr("class", "group-label")
-              .attr("x", -6)
+              .attr("x", -5)
               .attr("y", function(d) { return y1(d.values[0].value / 2); })
               .attr("dy", ".35em")
-              .text(function(d) { return "Group " + d.key; });
+              .text(function(d) { return d.key; });
 
           group.selectAll("rect")
               .data(function(d) { return d.values; })
             .enter().append("rect")
               .style("fill", function(d) { return color(d.group); })
-              .attr("x", function(d) { return x(d.date); })
+              // .attr("candidate", function(d) { return d.key; })
+              // .attr("date", function(d) { return d.date; })
+              .attr("x", function(d) { return x(parseDate(d.date)); })
               .attr("y", function(d) { return y1(d.value); })
               .attr("width", x.rangeBand())
               .attr("height", function(d) { return y0.rangeBand() - y1(d.value); });
@@ -162,32 +165,6 @@
               .attr("class", "x axis")
               .attr("transform", "translate(0," + y0.rangeBand() + ")")
               .call(xAxis);
-
-          d3.selectAll("input").on("change", change);
-
-          var timeout = setTimeout(function() {
-            d3.select("input[value=\"stacked\"]").property("checked", true).each(change);
-          }, 2000);
-
-          function change() {
-            clearTimeout(timeout);
-            if (this.value === "multiples") transitionMultiples();
-            else transitionStacked();
-          }
-
-          function transitionMultiples() {
-            var t = svg.transition().duration(750),
-                g = t.selectAll(".group").attr("transform", function(d) { return "translate(0," + y0(d.key) + ")"; });
-            g.selectAll("rect").attr("y", function(d) { return y1(d.value); });
-            g.select(".group-label").attr("y", function(d) { return y1(d.values[0].value / 2); })
-          }
-
-          function transitionStacked() {
-            var t = svg.transition().duration(750),
-                g = t.selectAll(".group").attr("transform", "translate(0," + y0(y0.domain()[0]) + ")");
-            g.selectAll("rect").attr("y", function(d) { return y1(d.value + d.valueOffset); });
-            g.select(".group-label").attr("y", function(d) { return y1(d.values[0].value / 2 + d.values[0].valueOffset); })
-          }
 
         },
         error: function (result) {
