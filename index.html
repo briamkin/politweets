@@ -35,6 +35,7 @@
     <script src="static/spin.min.js"></script>
     <script src="static/main.js"></script>
     <h1>Presidential Candidate Tracker</h1>
+    <p id="show-all">Show All Candidates</p>
     <div id="ajax-loader"></div>
     <script>
     Object.size = function(obj) {
@@ -45,9 +46,15 @@
         return size;
     };
 
-    $("#ajax-loader").show();
+    (function(){
+      var spin_opts = { lines: 13, length: 13, width: 3, radius: 15, corners: 0, rotate: 0, direction: 1, color: '#000', speed: 1, trail: 42, shadow: false, hwaccel: false, className: 'ajax-spinner', zIndex: 2e9, top: '50%', left: '50%', color: '#2171b5' };
+      var target = document.getElementById('ajax-loader');
+      var spinner = new Spinner(spin_opts).spin(target);
+    }());
 
     function create_stacks(data) {
+      $("#ajax-loader").show();
+
       var parseDate = d3.time.format("%Y-%m-%d").parse,
           formatDate = function(d) { return d.getFullYear() + "/" + (d.getMonth()+1) + "/" + d.getDate(); };
 
@@ -148,14 +155,14 @@
 
     // update_map(100, "jurassic");
 
-    function update_candidates() {
+    function update_candidates(group) {
       $.ajax({
         type: "POST",
         contentType: "application/json; charset=utf-8",
         url: "/candidates",
         dataType: "json",
         async: true,
-        // data: '{"hrs":' + String(hours) + '"}',
+        data: '{"group" : "' + String(group) + '"}',
         // data: '{"hrs":' + String(30) + ', "search":"' + String("nba, cavs, warriors, finals") + '"}',
         success: function (results) {
           data = results['data'];
@@ -170,11 +177,11 @@
         // }
       });
     }
-    update_candidates()
+    update_candidates("all");
 
     function generate_word_cloud(data) {
         var fill = d3.scale.category20();
-        d3.layout.cloud().size([960, 960])
+        d3.layout.cloud().size([960, 600])
             .words(data)
             .padding(5)
             .rotate(function() { return ~~(Math.random() * 2) * 90; })
@@ -187,7 +194,7 @@
               .attr("width", 960)
               .attr("height", 960)
             .append("g")
-              .attr("transform", "translate(480,480)")
+              .attr("transform", "translate(480,300)")
             .selectAll("text")
               .data(words)
             .enter().append("text")
@@ -211,29 +218,29 @@
         async: true,
         data: '{"date" :"' + String(date) + '","candidate" : "' + String(candidate) +  '"}',
         success: function (results) {
-          // console.log(results)
-          // alert('{"date" :' + String(date) + ',"candidate" : ' + String(candidate) +  '}');
           data = results['data'];
-          generate_word_cloud(data);
-          // console.log(results)
-          // create_stacks(data)
+          generate_word_cloud(data)
+          $("#ajax-loader").hide();
         },
         error: function (result) {
-          // alert('{"date" :"' + String(date) + '","candidate" : "' + String(candidate) +  '"}');
           console.log("hmm?")
+          $("#ajax-loader").hide();
         }
-        // complete: function () {
-        //   setTimeout(update_map, 5000)
-        // }
       });
     }
-    // create_word_cloud();
 
     $(document).on("click",".candidate-block", function(){
       var this_date = $(this).attr("date");
       var candidate = $(this).parent().attr("candidate");
       $("svg").remove();
+      $("#ajax-loader").show();
       create_word_cloud(this_date, candidate);
+    });
+
+    $("#show-all").click(function(){
+      $("svg").remove();
+      $("#ajax-loader").show();
+      update_candidates();
     });
 
     </script>

@@ -43,3 +43,7 @@ g.group {
   background-repeat: no-repeat;
   z-index: 100;
 }
+
+#show-all {
+  cursor: pointer;
+}
