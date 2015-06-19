@@ -1,56 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8">
-    <title>MomenTWEETum</title>
+    <title>Candidate Tracker</title>
+    <meta charset="utf-8">
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="apple-touch-icon" sizes="57x57" href="favicon/apple-touch-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="favicon/apple-touch-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="favicon/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="favicon/apple-touch-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="favicon/apple-touch-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="favicon/apple-touch-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="favicon/apple-touch-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="favicon/apple-touch-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon-180x180.png">
+    <link rel="icon" type="image/png" href="favicon/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="favicon/android-chrome-192x192.png" sizes="192x192">
+    <link rel="icon" type="image/png" href="favicon/favicon-96x96.png" sizes="96x96">
+    <link rel="icon" type="image/png" href="favicon/favicon-16x16.png" sizes="16x16">
+    <link rel="manifest" href="favicon/manifest.json">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="msapplication-TileImage" content="favicon/mstile-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+    <link href='static/style.css' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Roboto:100,700,400' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,300italic,700' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Shadows+Into+Light' rel='stylesheet' type='text/css'>
   </head>
   <body>
-    <style>
-
-    body {
-      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-      margin: auto;
-      position: relative;
-      width: 1100px;
-    }
-
-    text {
-      font: 10px sans-serif;
-    }
-
-    .axis path {
-      display: none;
-    }
-
-    .axis line {
-      fill: none;
-      stroke: #000;
-      shape-rendering: crispEdges;
-    }
-
-    .group-label {
-      font-weight: bold;
-      text-anchor: end;
-    }
-
-    form {
-      position: absolute;
-      right: 10px;
-      top: 10px;
-    }
-
-    g.group {
-      cursor: pointer;
-    }
-
-    </style>
-
-
     <script src="static/jquery.min.js"></script>
     <script src="static/d3.min.js"></script>
     <script src="static/d3.cloud.js"></script>
+    <script src="static/spin.min.js"></script>
     <script src="static/main.js"></script>
     <h1>Presidential Candidate Tracker</h1>
+    <div id="ajax-loader"></div>
     <script>
     Object.size = function(obj) {
         var size = 0, key;
@@ -59,6 +44,8 @@
         }
         return size;
     };
+
+    $("#ajax-loader").show();
 
     function create_stacks(data) {
       var parseDate = d3.time.format("%Y-%m-%d").parse,
@@ -133,6 +120,8 @@
           .attr("class", "x axis")
           .attr("transform", "translate(0," + y0.rangeBand() + ")")
           .call(xAxis);
+
+      $("#ajax-loader").hide();
     }
 
     function update_map(hours, search_terms) {
@@ -170,7 +159,7 @@
         // data: '{"hrs":' + String(30) + ', "search":"' + String("nba, cavs, warriors, finals") + '"}',
         success: function (results) {
           data = results['data'];
-          console.log(data)
+          console.log(results)
           create_stacks(data)
         },
         error: function (result) {
@@ -220,15 +209,17 @@
         url: "/wordcloud",
         dataType: "json",
         async: true,
-        data: '{"date" :' + String(date) + ',"candidate" : ' + String(candidate) +  '}',
+        data: '{"date" :"' + String(date) + '","candidate" : "' + String(candidate) +  '"}',
         success: function (results) {
           // console.log(results)
+          // alert('{"date" :' + String(date) + ',"candidate" : ' + String(candidate) +  '}');
           data = results['data'];
           generate_word_cloud(data);
           // console.log(results)
           // create_stacks(data)
         },
         error: function (result) {
+          // alert('{"date" :"' + String(date) + '","candidate" : "' + String(candidate) +  '"}');
           console.log("hmm?")
         }
         // complete: function () {
