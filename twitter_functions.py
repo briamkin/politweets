@@ -5,7 +5,7 @@ import time
 from county_geo import *
 from twitter_functions import *
 import math
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 import re
 from collections import defaultdict
 from gensim.models.ldamodel import LdaModel
@@ -99,33 +99,33 @@ def tweet_booststrapper(dict, n=0):
         return tweet_booststrapper(bootstrap_dict, n)
     return bootstrap_dict
 
-def get_all_candidates(time=0, n=0, all_results=0):
-    candidate_tweets = {}
-    candidate_totals = {}
-    for key in candidate_search:
-        total_volume = 0
-        total_sentiment = 0
-        total_sent_vol = 0
-        search_terms = candidate_search[key]
-        tweets = return_tweets(time, search_terms, all_results)
-        boosted_tweets = tweet_booststrapper(tweets,n)
-        candidate_tweets[key] = boosted_tweets
-        for county in boosted_tweets:
-            county_volume = boosted_tweets[county]['volume']
-            county_sentiment = boosted_tweets[county]['sentiment']
-            total_volume += county_volume
-            if county_sentiment != None:
-                total_sentiment += (county_volume*county_sentiment)
-                total_sent_vol += county_volume
-        candidate_totals[key] = {}
-        try:
-            candidate_totals[key]['volume'] = total_volume
-            candidate_totals[key]['sentiment'] = total_sentiment/total_sent_vol
-        except:
-            candidate_totals[key]['volume'] = 0
-            candidate_totals[key]['sentiment'] = 0
-    all_data = {"total" : candidate_totals, "county" : candidate_tweets}
-    return all_data
+# def get_all_candidates(time=0, n=0, all_results=0):
+#     candidate_tweets = {}
+#     candidate_totals = {}
+#     for key in candidate_search:
+#         total_volume = 0
+#         total_sentiment = 0
+#         total_sent_vol = 0
+#         search_terms = candidate_search[key]
+#         tweets = return_tweets(time, search_terms, all_results)
+#         boosted_tweets = tweet_booststrapper(tweets,n)
+#         candidate_tweets[key] = boosted_tweets
+#         for county in boosted_tweets:
+#             county_volume = boosted_tweets[county]['volume']
+#             county_sentiment = boosted_tweets[county]['sentiment']
+#             total_volume += county_volume
+#             if county_sentiment != None:
+#                 total_sentiment += (county_volume*county_sentiment)
+#                 total_sent_vol += county_volume
+#         candidate_totals[key] = {}
+#         try:
+#             candidate_totals[key]['volume'] = total_volume
+#             candidate_totals[key]['sentiment'] = total_sentiment/total_sent_vol
+#         except:
+#             candidate_totals[key]['volume'] = 0
+#             candidate_totals[key]['sentiment'] = 0
+#     all_data = {"total" : candidate_totals, "county" : candidate_tweets}
+#     return all_data
 
 def get_candidates_js_object(time=0, n=0):
     candidates_object = []
@@ -160,35 +160,10 @@ def get_all_candidates_js_objects(time=1):
         all_candidates_object += get_candidates_js_object(x)
     return all_candidates_object
 
-# def get_topics(n, candidate):
-#     client = MongoClient()
-#     tweets = client.fletcher.tweets
-#     tweets = tweets.aggregate([{"$match":{"$text":{"$search":candidate_search[candidate]}}}])
-#     documents = []
-#     pattern = re.compile("[^a-zA-Z ]")
-#     for tweet in tweets:
-#         documents.append(pattern.sub('', tweet['text']))
-#     stoplist = set(candidate_stop_words[candidate] + stopwords)
-#     texts = [[word for word in document.lower().split() if word not in stoplist]
-#             for document in documents]
-#     frequency = defaultdict(int)
-#     for text in texts:
-#         for token in text:
-#             frequency[token] += 1
-#     texts = [[token for token in text if frequency[token] > 1]
-#             for text in texts]
-#     dictionary = corpora.Dictionary(texts)
-#     lda = LdaModel(corpus=corpus, id2word=dictionary, num_topics=n, update_every=1, chunksize=10000, passes=10)
-#     return lda.print_topics(n)
-
-def get_topic_dictionary(candidate, day):
-    today_epoch = int(date.today().strftime('%s'))
-    start_time = (today_epoch - (day*86400))*1000
-    end_time = start_time + 86399999
+def get_topics(n, candidate):
     client = MongoClient()
     tweets = client.fletcher.tweets
-    tweets = tweets.aggregate([{"$match":{"$text":{"$search":candidate_search[candidate]}}},
-                               {"$match":{"timestamp_ms":{"$gte":start_time,"$lt":end_time}}}])
+    tweets = tweets.aggregate([{"$match":{"$text":{"$search":candidate_search[candidate]}}}])
     documents = []
     pattern = re.compile("[^a-zA-Z ]")
     for tweet in tweets:
@@ -203,11 +178,38 @@ def get_topic_dictionary(candidate, day):
     texts = [[token for token in text if frequency[token] > 1]
             for text in texts]
     dictionary = corpora.Dictionary(texts)
+    lda = LdaModel(corpus=corpus, id2word=dictionary, num_topics=n, update_every=1, chunksize=10000, passes=10)
+    return lda.print_topics(n)
+
+def get_topic_dictionary(candidate, day):
+    start_time = datetime.strptime(day, "%Y-%m-%d").date()
+    start_time = int(start_time.strftime('%s'))*1000
+    end_time = start_time + 86399999
+    client = MongoClient()
+    tweets = client.fletcher.tweets
+    tweets = tweets.aggregate([{"$match":{"$text":{"$search":candidate_search[candidate]}}},
+                               {"$match":{"timestamp_ms":{"$gte":start_time,"$lt":end_time}}}])
+    documents = []
+    pattern = re.compile("[^a-zA-Z ]")
+    for tweet in tweets:
+        try:
+            documents.append(pattern.sub('', tweet['text']))
+        except:
+            continue
+    stoplist = set(candidate_stop_words[candidate] + stopwords)
+    texts = [[word for word in document.lower().split() if word not in stoplist]
+            for document in documents]
+    frequency = defaultdict(int)
+    for text in texts:
+        for token in text:
+            frequency[token] += 1
+    texts = [[token for token in text if frequency[token] > 1]
+            for text in texts]
+    dictionary = corpora.Dictionary(texts)
     topics = []
     for item in dictionary.items():
         topics.append({"text" : item[1], "size" : item[0]})
     return topics
-    # return "test"
 
 
 

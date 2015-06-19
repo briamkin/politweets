@@ -30,7 +30,7 @@ def wordcloud():
 
     # Put the result in a nice dict so we can send it as json
     # results = find_momentum()
-    topics = { 'data' : get_topic_dictionary("Hillary Clinton") }
+    topics = { 'data' : get_topic_dictionary(data['date'], data['hrs']) }
     # topics = { 'data' : [{"size":50, "text":"hillary"}, {"size":100, "text":"clinton"}, {"size":24, "text":"test"}]}
     return flask.jsonify(topics)
 
