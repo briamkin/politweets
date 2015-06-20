@@ -37,8 +37,8 @@ def wordcloud():
     # Put the result in a nice dict so we can send it as json
     # results = find_momentum()
     data = flask.request.json
-    # topics = { 'data' : get_topic_dictionary(data['date'], data['candidate']) }
-    topics = { 'data' : get_topic_dictionary("Hillary Clinton","2015-06-13") }
+    topics = { 'data' : get_topic_dictionary(data['candidate'],data['date']) }
+    # topics = { 'data' : get_topic_dictionary("Hillary Clinton","2015-06-13") }
     # topics = { 'data' : [{"size":50, "text":"hillary"}, {"size":100, "text":"clinton"}, {"size":24, "text":"test"}]}
     return flask.jsonify(topics)
 
@@ -58,8 +58,8 @@ def candidates():
     """
     When A POST request is made to this uri, return all candidate data in the last time period.
     """
-    # data = flask.request.json
-    tweets = { 'data': get_all_candidates_js_objects(10) }
+    data = flask.request.json
+    tweets = { 'data': get_all_candidates_js_objects(10, "all") }
     # tweets = get_all_candidates_js_objects(10)
     # tweets = {1:1,2:2,3:3,4:4,5}
     return flask.jsonify(tweets)

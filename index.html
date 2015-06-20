@@ -6,22 +6,22 @@
     <meta name="HandheldFriendly" content="True" />
     <meta name="MobileOptimized" content="320" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="apple-touch-icon" sizes="57x57" href="favicon/apple-touch-icon-57x57.png">
-    <link rel="apple-touch-icon" sizes="60x60" href="favicon/apple-touch-icon-60x60.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="favicon/apple-touch-icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="76x76" href="favicon/apple-touch-icon-76x76.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="favicon/apple-touch-icon-114x114.png">
-    <link rel="apple-touch-icon" sizes="120x120" href="favicon/apple-touch-icon-120x120.png">
-    <link rel="apple-touch-icon" sizes="144x144" href="favicon/apple-touch-icon-144x144.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="favicon/apple-touch-icon-152x152.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon-180x180.png">
-    <link rel="icon" type="image/png" href="favicon/favicon-32x32.png" sizes="32x32">
-    <link rel="icon" type="image/png" href="favicon/android-chrome-192x192.png" sizes="192x192">
-    <link rel="icon" type="image/png" href="favicon/favicon-96x96.png" sizes="96x96">
-    <link rel="icon" type="image/png" href="favicon/favicon-16x16.png" sizes="16x16">
-    <link rel="manifest" href="favicon/manifest.json">
+    <link rel="apple-touch-icon" sizes="57x57" href="static/favicon/apple-touch-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="static/favicon/apple-touch-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="static/favicon/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="static/favicon/apple-touch-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="static/favicon/apple-touch-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="static/favicon/apple-touch-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="static/favicon/apple-touch-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="static/favicon/apple-touch-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="static/favicon/apple-touch-icon-180x180.png">
+    <link rel="icon" type="image/png" href="static/favicon/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="static/favicon/android-chrome-192x192.png" sizes="192x192">
+    <link rel="icon" type="image/png" href="static/favicon/favicon-96x96.png" sizes="96x96">
+    <link rel="icon" type="image/png" href="static/favicon/favicon-16x16.png" sizes="16x16">
+    <link rel="manifest" href="static/favicon/manifest.json">
     <meta name="msapplication-TileColor" content="#da532c">
-    <meta name="msapplication-TileImage" content="favicon/mstile-144x144.png">
+    <meta name="msapplication-TileImage" content="static/favicon/mstile-144x144.png">
     <meta name="theme-color" content="#ffffff">
     <link href='static/style.css' rel='stylesheet' type='text/css'>
     <link href='http://fonts.googleapis.com/css?family=Roboto:100,700,400' rel='stylesheet' type='text/css'>
@@ -58,7 +58,7 @@
       var parseDate = d3.time.format("%Y-%m-%d").parse,
           formatDate = function(d) { return d.getFullYear() + "/" + (d.getMonth()+1) + "/" + d.getDate(); };
 
-      var margin = {top: 10, right: 20, bottom: 20, left: 90},
+      var margin = {top: 10, right: 20, bottom: 20, left: 150},
           width = 1100 - margin.left - margin.right,
           height = 500 - margin.top - margin.bottom;
 
@@ -108,8 +108,8 @@
       group.append("text")
           .attr("class", "group-label")
           .attr("x", -5)
-          .attr("y", function(d) { return y1(d.values[0].value / 2); })
-          .attr("dy", ".35em")
+          .attr("y", function(d) { return y1((d.values[0].value) / 2); })
+          .attr("dy", "1em")
           .text(function(d) { return d.key; });
 
       group.selectAll("rect")
@@ -155,18 +155,17 @@
 
     // update_map(100, "jurassic");
 
-    function update_candidates(group) {
+    function update_candidates(group_val) {
       $.ajax({
         type: "POST",
         contentType: "application/json; charset=utf-8",
         url: "/candidates",
         dataType: "json",
         async: true,
-        data: '{"group" : "' + String(group) + '"}',
-        // data: '{"hrs":' + String(30) + ', "search":"' + String("nba, cavs, warriors, finals") + '"}',
+        data: '{"group" :"' + group_val + '"}',
         success: function (results) {
           data = results['data'];
-          console.log(results)
+          // console.log(results)
           create_stacks(data)
         },
         error: function (result) {
@@ -177,7 +176,7 @@
         // }
       });
     }
-    update_candidates("all");
+    update_candidates("top");
 
     function generate_word_cloud(data) {
         var fill = d3.scale.category20();
