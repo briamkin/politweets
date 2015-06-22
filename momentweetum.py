@@ -64,6 +64,15 @@ def candidates():
     # tweets = {1:1,2:2,3:3,4:4,5}
     return flask.jsonify(tweets)
 
+@app.route("/stream", methods=["POST"])
+def stream():
+    """
+    When A POST request is made to this uri, return all tweets from the last 10 seconds.
+    """
+    tweets = { 'tweets' : return_last_tweets() }
+    # tweets = { 'tweets' : ["test"] }
+    return flask.jsonify(tweets)
+
 #--------- RUN WEB APP SERVER ------------#
 
 # Start the app server on port 80

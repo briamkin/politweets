@@ -39,6 +39,10 @@
     <p class="show-candidates" data="top">Show Top Candidates</p>
     <p class="show-candidates" data="dem">Show Democratic Candidates</p>
     <p class="show-candidates" data="rep">Show Republican Candidates</p>
+    <div id="main-img-div"><img><p></p></div>
+    <div id="live-tweets-div">
+      <p></p>
+    </div>
     <div id="ajax-loader"></div>
     <script>
     Object.size = function(obj) {
@@ -231,6 +235,31 @@
       });
     }
 
+    function get_stream() {
+      $.ajax({
+        type: "POST",
+        contentType: "application/json; charset=utf-8",
+        url: "/stream",
+        dataType: "json",
+        async: true,
+        success: function (results) {
+          data = results['tweets'];
+          console.log(data);
+          $("#ajax-loader").hide();
+        },
+        error: function (result) {
+          console.log("hmm?")
+        }
+      });
+    }
+
+    get_stream();
+
+    function return_candidate_img_src(name) {
+      name = "static/img/candidates/" + name.toLowerCase().replace(" ", "-") + ".jpg";
+      return name;
+    }
+
     $(document).on("click",".candidate-block", function(){
       var this_date = $(this).attr("date");
       var candidate = $(this).parent().attr("candidate");
@@ -246,6 +275,19 @@
       update_candidates(attr,"");
     });
 
+    $(document).on({
+      mouseenter: function () {
+        var candidate = $(this).text();
+        var img_src = return_candidate_img_src(candidate);
+        $("#main-img-div > img").attr("src", img_src);
+        $("#main-img-div > p").text(candidate);
+        $("#main-img-div > img").show();
+      },
+      mouseleave: function () {
+        // $("#main-img-div > img").hide();
+      }
+    }, ".group-label");
+
     $(document).on("click", ".group-label" ,function(){
       $("svg").remove();
       $("#ajax-loader").show();
@@ -253,6 +295,7 @@
       var candidate = $(this).text();
       update_candidates(attr, candidate);
     });
+
 
     </script>
   </body>

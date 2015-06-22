@@ -49,3 +49,23 @@ g.group {
   float: left;
   margin: 0 10px;
 }
+
+#main-img-div {
+  width: 200px;
+  height: 250px;
+  margin-top: 60px;
+  margin-bottom: -30px;
+}
+
+#main-img-div > img {
+  width: 200px;
+  height: auto;
+  display: none;
+}
+
+#main-img-div > p {
+  position: absolute;
+  top: 70px;
+  left: 230px;
+  font-size: 25px;
+}

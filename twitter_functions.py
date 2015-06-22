@@ -28,6 +28,30 @@ stopwords = ["@", "a", "about", "above", "across", "after", "again", "against", 
 candidate_stop_words = {'Ben Carson': ['realbencarson','bencarson','drbencarson','teamcarson','teambencarson','bencarson2016','carson2016','carson4president','carsonforpresident','bencarson4president','bencarsonforpresident'],'Bernie Sanders': ['berniesanders','sensanders','teambernie','teamberniesanders','bernie2016','sanders2016','berniesanders2016','sanders4president','sandersforpresident','bernie4president','bernieforpresident','berniesanderse4president','berniesanderseforpresident'],'Carly Fiorina': ['carlyfiorina','fiorina','teamcarly','teamfiorina','teamcarlyfiorina','carly2016','carly4president','carlyforpresident','carlyfiorina4president','carlyfiorinaforpresident','fiorina4president','fiorinaforpresident'],'Donald Trump': ['donaldtrump','realdonaldtrump','teamdonaldtrump','teamtrump','trump2016','donaldtrump2016','donaltrump4president','donaldtrumpforpresident','trump4president','trumpforpresident'],'George Pataki': ['governorpataki','govpataki','pataki','georgepataki','pataki4president','patakiforpresident','georgepataki4president','georgepatakiforpresident','teampataki'],'Hillary Clinton': ['hillaryclinton','hillary','teamhillary','teamclinton','teamhillaryclinton','hillary2016','clinton2016','hillaryclinton2016','hillaryforamerica','hillary4america','hillaryforpresident','hillary4president'],'Jeb Bush': ['jebbush','teamjeb','teamjebbush','jeb2016','bush2016','jebbush2016','jeb','jeb4president','jebforpresident','jebbush4president','jebbushforpresident'],'Lincoln Chafee': ['lincolnchafee','chafee','teamchafee','teamlincolnchafee','chafee2016','lincolnchafee2016','chafeeforpresident','chafee4president'],'Lindsey Graham': ['linseygrahamsc','lindseygraham','grahamblog','senlindseygraham','teamgraham','teamlindseygraham','graham2016','lindseygraham2016','graham4president','grahamforpresident','lindseygraham4president','lindseygrahamforpresident'],'Marco Rubio': ['marcorubio','rubio2016','marcorubio2016','teammarco','teammarcorubio','marco4president','marcoforpresident','rubio4president','rubioforpresident','marcorubio4president','marcorubioforpresident'],"Martin O'Malley": ['governoromalley','martinomalley','teamomalley','teammartinomalley','omalley2016','martinomalley2016','omalley4president','omalleyforpresident'],'Mike Huckabee': ['govmikehuckabee','mikehuckabee','teamhuckabee','teammikehuckabee','huckabee2016','mikehuckabee2016','huckaboom','huckabee4president','huckabeeforpresident','mikehuckabee4president','mikehuckabeeforpresident'],'Rand Paul': ['randpaul','drrandpaul','senatorrandpaul','teamrand','teamrandpaul','randpaul2016','rand2016','standwithrand','rand4president','randforpresident','paul4president','paulforpresident','randpaul4president','randpaulforpresident'],'Rick Perry': ['governorperry','rickperry','teamrickperry','perry2016','rickperry2016','perry4president','perryforpresident','rickperry4president','rickperryforpresident'],'Rick Santorum': ['ricksantorum','santorum2016','teamsantorum','teamricksantorum','santorum4president','santorumforpresident','ricksantorum4president','ricksantorumforpresident'],'Scott Walker': ['scottwalker','teamscottwalker','scottwalker2016','walker4president','walkerforpresident','scottwalker4president','scottwalkerforpresident'],'Ted Cruz': ['tedcruz','sentedcruz','teamcruz','teamtedcruz','tedcruz2016','cruzcrew','cruz4president','cruzforpresident','tedcruz4president',
   'tedcruzforpresident']}
 
+def return_last_tweets():
+    current_epoch_time = int(time.time())
+    last_day = (current_epoch_time-86400)*1000
+    all_search = ""
+    for key in candidate_search:
+        all_search += (candidate_search[key] + " ")
+    client = MongoClient()
+    db = client.fletcher.tweets
+    tweets = []
+    query = db.aggregate([
+            {"$match":{"$text":{"$search":all_search}}},
+            {"$match":{"timestamp_ms":{"$gte":last_day}}}])
+    for tweet in query:
+        try:
+            tweets.append({
+                            'text':tweet['text'],
+                            'screen_name':tweet['screen_name'],
+                            'timestamp':tweet['timestamp_ms'],
+                            'profile_img':tweet['profile_img']
+                        })
+        except:
+            pass
+    return tweets
+
 def return_tweets(day, search_terms="", all_results=0):
     today_epoch = int(date.today().strftime('%s'))
     start_time = (today_epoch - (day*86400))*1000

@@ -123,6 +123,7 @@ class StdOutListener(StreamListener):
                         print loc_name, point
                         print tweet_data['text']
                         print tweet_data['sentiment']
+                        print tweet_data['timestamp_ms']
                     except Exception:
                         logger.exception("Error inserting into Mongo")
 
