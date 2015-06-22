@@ -35,7 +35,10 @@
     <script src="static/spin.min.js"></script>
     <script src="static/main.js"></script>
     <h1>Presidential Candidate Tracker</h1>
-    <p id="show-all">Show All Candidates</p>
+    <p class="show-candidates" data="all">Show All Candidates</p>
+    <p class="show-candidates" data="top">Show Top Candidates</p>
+    <p class="show-candidates" data="dem">Show Democratic Candidates</p>
+    <p class="show-candidates" data="rep">Show Republican Candidates</p>
     <div id="ajax-loader"></div>
     <script>
     Object.size = function(obj) {
@@ -58,7 +61,7 @@
       var parseDate = d3.time.format("%Y-%m-%d").parse,
           formatDate = function(d) { return d.getFullYear() + "/" + (d.getMonth()+1) + "/" + d.getDate(); };
 
-      var margin = {top: 10, right: 20, bottom: 20, left: 150},
+      var margin = {top: 13.5, right: 20, bottom: 20, left: 150},
           width = 1100 - margin.left - margin.right,
           height = 500 - margin.top - margin.bottom;
 
@@ -155,14 +158,14 @@
 
     // update_map(100, "jurassic");
 
-    function update_candidates(group_val) {
+    function update_candidates(group_val, individual) {
       $.ajax({
         type: "POST",
         contentType: "application/json; charset=utf-8",
         url: "/candidates",
         dataType: "json",
         async: true,
-        data: '{"group" :"' + group_val + '"}',
+        data: '{"group" :"' + group_val + '", "individual" :"' + individual + '"}',
         success: function (results) {
           data = results['data'];
           // console.log(results)
@@ -176,7 +179,7 @@
         // }
       });
     }
-    update_candidates("top");
+    update_candidates("top","");
 
     function generate_word_cloud(data) {
         var fill = d3.scale.category20();
@@ -236,10 +239,19 @@
       create_word_cloud(this_date, candidate);
     });
 
-    $("#show-all").click(function(){
+    $(".show-candidates").click(function(){
       $("svg").remove();
       $("#ajax-loader").show();
-      update_candidates();
+      var attr = $(this).attr("data");
+      update_candidates(attr,"");
+    });
+
+    $(document).on("click", ".group-label" ,function(){
+      $("svg").remove();
+      $("#ajax-loader").show();
+      var attr = $(this).attr("data");
+      var candidate = $(this).text();
+      update_candidates(attr, candidate);
     });
 
     </script>

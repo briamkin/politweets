@@ -13,7 +13,7 @@ from gensim import corpora, models, similarities
 
 all_candidates = ["Lincoln Chafee", "Hillary Clinton", "Martin O'Malley", "Bernie Sanders", "Ben Carson", "Ted Cruz", "Carly Fiorina", "Lindsey Graham", "George Pataki", "Rand Paul", "Rick Perry", "Marco Rubio", "Rick Santorum", "Mike Huckabee", "Jeb Bush", "Scott Walker", "Donald Trump"]
 
-top_candidates = ["Hillary Clinton", "Bernie Sanders", "Ben Carson", "Ted Cruz", "Carly Fiorina", "Rand Paul", "Rick Santorum", "Jeb Bush", "Donald Trump"]
+top_candidates = ["Hillary Clinton", "Bernie Sanders", "Ben Carson", "Ted Cruz", "Carly Fiorina", "Rand Paul", "Jeb Bush", "Donald Trump"]
 
 top_democrats = ["Lincoln Chafee", "Hillary Clinton", "Martin O'Malley", "Bernie Sanders"]
 
@@ -129,11 +129,15 @@ def tweet_booststrapper(dict, n=0):
 #     all_data = {"total" : candidate_totals, "county" : candidate_tweets}
 #     return all_data
 
-def get_candidates_js_object(time=0, n=0, group_val="top"):
+def get_candidates_js_object(time=0, n=0, group_val="top", individual=""):
     candidates_object = []
     js_date = date.today() - timedelta(time)
     js_date = js_date.strftime('%Y-%m-%d')
-    for key in candidate_lists[group_val]:
+    if individual != "":
+        iterator = [individual]
+    else:
+        iterator = candidate_lists[group_val]
+    for key in iterator:
         total_volume = 0
         total_sent_vol = 0
         search_terms = candidate_search[key]
@@ -156,13 +160,13 @@ def get_candidates_js_object(time=0, n=0, group_val="top"):
 #         day_array[x] = get_all_candidates(x)
 #     return day_array
 
-def get_all_candidates_js_objects(time=1, group_val="top"):
+def get_all_candidates_js_objects(time=1, group_val="top", individual=""):
     all_candidates_object = []
     for x in reversed(range(time)):
-        all_candidates_object += get_candidates_js_object(x, 0, group_val)
+        all_candidates_object += get_candidates_js_object(x, 0, group_val, individual)
     return all_candidates_object
 
-def get_topics(n, candidate):
+def get_topics(candidate):
     client = MongoClient()
     tweets = client.fletcher.tweets
     tweets = tweets.aggregate([{"$match":{"$text":{"$search":candidate_search[candidate]}}}])

@@ -5,7 +5,6 @@ import cnfg
 import json
 from geo import *
 from vaderSentiment.vaderSentiment import sentiment as vaderSentiment
-# from textblob import TextBlob
 from pymongo import MongoClient
 import time
 import logging

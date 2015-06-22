@@ -6,7 +6,7 @@ body {
 }
 
 text {
-  font: 15px sans-serif;
+  font: 13.5px sans-serif;
 }
 
 .axis path {
@@ -44,6 +44,8 @@ g.group {
   z-index: 100;
 }
 
-#show-all {
+.show-candidates {
   cursor: pointer;
+  float: left;
+  margin: 0 10px;
 }

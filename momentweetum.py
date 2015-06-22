@@ -59,7 +59,7 @@ def candidates():
     When A POST request is made to this uri, return all candidate data in the last time period.
     """
     data = flask.request.json
-    tweets = { 'data': get_all_candidates_js_objects(10, "all") }
+    tweets = { 'data': get_all_candidates_js_objects(10, data['group'], data['individual']) }
     # tweets = get_all_candidates_js_objects(10)
     # tweets = {1:1,2:2,3:3,4:4,5}
     return flask.jsonify(tweets)
