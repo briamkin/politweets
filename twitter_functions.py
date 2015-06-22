@@ -10,6 +10,7 @@ import re
 from collections import defaultdict
 from gensim.models.ldamodel import LdaModel
 from gensim import corpora, models, similarities
+from operator import itemgetter
 
 all_candidates = ["Lincoln Chafee", "Hillary Clinton", "Martin O'Malley", "Bernie Sanders", "Ben Carson", "Ted Cruz", "Carly Fiorina", "Lindsey Graham", "George Pataki", "Rand Paul", "Rick Perry", "Marco Rubio", "Rick Santorum", "Mike Huckabee", "Jeb Bush", "Scott Walker", "Donald Trump"]
 
@@ -50,7 +51,8 @@ def return_last_tweets():
                         })
         except:
             pass
-    return tweets
+    sorted_tweets = sorted(tweets, key=itemgetter('timestamp'))
+    return sorted_tweets
 
 def return_tweets(day, search_terms="", all_results=0):
     today_epoch = int(date.today().strftime('%s'))

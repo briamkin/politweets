@@ -2,6 +2,7 @@
 
 from __future__ import division
 import flask
+from flask import render_template
 from pymongo import MongoClient
 import time
 from county_geo import *
@@ -24,8 +25,9 @@ def home():
     """
     Homepage: serve our visualization page, awesome.html
     """
-    with open("index.html", 'r') as file:
-        return file.read()
+    # with open("index.html", 'r') as file:
+    #     return file.read()
+    return render_template('index.html')
 
 # Get an example and return it's score from the predictor model
 @app.route("/wordcloud", methods=["POST"])
@@ -64,6 +66,17 @@ def candidates():
     # tweets = {1:1,2:2,3:3,4:4,5}
     return flask.jsonify(tweets)
 
+@app.route("/candidate/<name>")
+def candidate(name=None):
+    """
+    When A POST request is made to this uri, return all candidate data in the last time period.
+    """
+    # data = flask.request.json
+    # tweets = { 'data': get_all_candidates_js_objects(10, data['group'], data['individual']) }
+    # tweets = get_all_candidates_js_objects(10)
+    # tweets = {1:1,2:2,3:3,4:4,5}
+    return render_template('candidate.html', name=name)
+
 @app.route("/stream", methods=["POST"])
 def stream():
     """
@@ -73,6 +86,8 @@ def stream():
     # tweets = { 'tweets' : ["test"] }
     return flask.jsonify(tweets)
 
+if __name__ == '__main__':
+    app.run(debug=True)
 #--------- RUN WEB APP SERVER ------------#
 
 # Start the app server on port 80

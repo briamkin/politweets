@@ -1,0 +1,107 @@
+{% extends "layout.html" %}
+{% block content %}
+    <h1>Presidential Candidate Tracker</h1>
+    <p class="show-candidates" data="all">Show All Candidates</p>
+    <p class="show-candidates" data="top">Show Top Candidates</p>
+    <p class="show-candidates" data="dem">Show Democratic Candidates</p>
+    <p class="show-candidates" data="rep">Show Republican Candidates</p>
+    <div id="main-img-div"><img><p></p></div>
+    <div id="live-tweets-div"><span>Live Streaming Tweets about the 2016 Election Candidates</span></div>
+    <div id="ajax-loader"></div>
+    <script>
+    function create_word_cloud(date, candidate) {
+      $.ajax({
+        type: "POST",
+        contentType: "application/json; charset=utf-8",
+        url: "/wordcloud",
+        dataType: "json",
+        async: true,
+        data: '{"date" :"' + String(date) + '","candidate" : "' + String(candidate) +  '"}',
+        success: function (results) {
+          data = results['data'];
+          generate_word_cloud(data)
+          $("#ajax-loader").hide();
+        },
+        error: function (result) {
+          console.log("hmm?")
+          $("#ajax-loader").hide();
+        }
+      });
+    }
+
+    function get_stream() {
+      $.ajax({
+        type: "POST",
+        contentType: "application/json; charset=utf-8",
+        url: "/stream",
+        dataType: "json",
+        async: true,
+        success: function (results) {
+          data = results['tweets'];
+          console.log(data);
+          var i = 0;
+          var len = data.length;
+
+          (function loop() {
+              var rand = Math.round(Math.random() * 10000);
+              setTimeout(function() {
+                      $("#live-tweets-div").prepend("<p class='live-tweet'><img src='" + data[i]['profile_img'] + "'>" + data[i]['text'] + "</p>");
+                      var child_len = $("#live-tweets-div > p").length;
+                      if (child_len > 50) {
+                        $("#live-tweets-div > p:gt(51)").remove();
+                      }
+                      if (i == (len-1)) {
+                        get_stream();
+                      } else {
+                        loop();
+                        i++
+                      }
+              }, rand);
+          }());
+          $("#ajax-loader").hide();
+        },
+        error: function (result) {
+          console.log("hmm?")
+        }
+      });
+    }
+
+    get_stream();
+
+    $(document).on("click",".candidate-block", function(){
+      var this_date = $(this).attr("date");
+      var candidate = $(this).parent().attr("candidate");
+      $("svg").remove();
+      $("#ajax-loader").show();
+      create_word_cloud(this_date, candidate);
+    });
+
+    $(".show-candidates").click(function(){
+      $("svg").remove();
+      $("#ajax-loader").show();
+      var attr = $(this).attr("data");
+      update_candidates(attr,"");
+    });
+
+    $(document).on({
+      mouseenter: function () {
+        var candidate = $(this).text();
+        var img_src = return_candidate_img_src(candidate);
+        $("#main-img-div > img").attr("src", img_src);
+        $("#main-img-div > p").text(candidate);
+        $("#main-img-div > img").show();
+      },
+      mouseleave: function () {
+        // $("#main-img-div > img").hide();
+      }
+    }, ".group-label");
+
+    $(document).on("click", ".group-label" ,function(){
+      $("svg").remove();
+      $("#ajax-loader").show();
+      var attr = $(this).attr("data");
+      var candidate = $(this).text();
+      update_candidates(attr, candidate);
+    });
+    </script>
+{% endblock %}

@@ -19007,3 +19007,513 @@ Traceback (most recent call last):
   File "tw_app.py", line 77, in on_data
     coordinate = tweet['coordinates']
 KeyError: 'coordinates'
+2015-06-22 00:38:43,825 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:38:44,737 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:38:44,803 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:38:45,747 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:38:45,795 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:38:46,713 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:38:47,712 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:38:49,710 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:38:49,756 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:38:52,782 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:38:52,790 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:38:52,805 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:38:53,677 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:38:53,862 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:38:55,739 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:38:55,756 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:38:56,773 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:38:56,787 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:38:57,789 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:38:58,768 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:38:58,953 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:38:59,767 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:00,683 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:00,801 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:02,735 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:03,723 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:04,154 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:04,648 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:04,731 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:04,741 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:05,717 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:05,888 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:06,871 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:07,741 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:08,913 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:09,709 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:10,154 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:11,774 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:12,700 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:12,721 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:13,799 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:13,840 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:14,677 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:14,862 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:18,672 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:19,084 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:19,095 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:21,364 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:21,377 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:21,393 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:21,748 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:22,187 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:22,280 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:23,568 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:29,228 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:29,315 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:30,259 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:30,920 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:31,411 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:31,481 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:31,783 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:31,787 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:32,347 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:32,612 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:32,719 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:32,758 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:32,992 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:33,024 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:33,102 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:33,263 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:33,415 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:33,775 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:34,694 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:34,825 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:35,687 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:36,745 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:37,736 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:37,897 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:39,752 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:39,825 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:40,711 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:40,713 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:40,767 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:41,676 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:41,866 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:42,687 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:42,892 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:43,976 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:44,008 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:45,707 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:45,739 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:45,866 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:46,780 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:47,084 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:47,699 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:49,685 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:49,980 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:50,734 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:50,771 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:51,783 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:51,849 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
+2015-06-22 00:39:51,856 - __main__ - ERROR - Error getting tweet
+Traceback (most recent call last):
+  File "tw_app.py", line 77, in on_data
+    coordinate = tweet['coordinates']
+KeyError: 'coordinates'
