@@ -69,3 +69,13 @@ g.group {
   left: 230px;
   font-size: 25px;
 }
+
+#live-tweets-div {
+  width: 500px;
+  height: 300px;
+  overflow-y: hidden;
+  border: 1px solid #000;
+  position: absolute;
+  top: 100px;
+  left: 530px;
+}
