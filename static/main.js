@@ -30,10 +30,20 @@
       var x = d3.scale.ordinal()
           .rangeRoundBands([0, width], .1, 0);
 
+      // var y = d3.scale.linear()
+      //     .domain([0, height / 5])
+      //     .range([310, 0]);
+
       var xAxis = d3.svg.axis()
           .scale(x)
           .orient("bottom")
           .tickFormat(formatDate);
+
+      // var yAxis = d3.svg.axis()
+      //     .scale(y)
+      //     .orient("left")
+      //     .ticks(5)
+      //     .tickSize(-width);
 
       var nest = d3.nest()
           .key(function(d) { return d.group; });
@@ -64,6 +74,7 @@
           .attr("class", "group")
           .attr("candidate", function(d) { return d.key; })
           .attr("transform", function(d) { return "translate(0," + y0(d.key) + ")"; });
+          // .call(yAxis);
 
       group.append("text")
           .attr("class", "group-label")
@@ -131,12 +142,8 @@
         error: function (result) {
           console.log("hmm?")
         }
-        // complete: function () {
-        //   setTimeout(update_map, 5000)
-        // }
       });
     }
-    update_candidates("top","");
 
     function generate_word_cloud(data) {
         var fill = d3.scale.category20();
@@ -171,4 +178,66 @@
     function return_candidate_img_src(name) {
       name = "static/img/candidates/" + name.toLowerCase().replace(" ", "-") + ".jpg";
       return name;
+    }
+
+    function return_candidate_short_name(name) {
+      name = name.toLowerCase().replace(/[^\w]/gi, '');
+      return name;
+    }
+
+    function create_word_cloud(date, candidate) {
+      $.ajax({
+        type: "POST",
+        contentType: "application/json; charset=utf-8",
+        url: "/wordcloud",
+        dataType: "json",
+        async: true,
+        data: '{"date" :"' + String(date) + '","candidate" : "' + String(candidate) +  '"}',
+        success: function (results) {
+          data = results['data'];
+          generate_word_cloud(data)
+          $("#ajax-loader").hide();
+        },
+        error: function (result) {
+          console.log("hmm?")
+          $("#ajax-loader").hide();
+        }
+      });
+    }
+
+    function get_stream() {
+      $.ajax({
+        type: "POST",
+        contentType: "application/json; charset=utf-8",
+        url: "/stream",
+        dataType: "json",
+        async: true,
+        success: function (results) {
+          data = results['tweets'];
+          console.log(data);
+          var i = 0;
+          var len = data.length;
+
+          (function loop() {
+              var rand = Math.round(Math.random() * 10000);
+              setTimeout(function() {
+                      $("#live-tweets-div").prepend("<p class='live-tweet'><img src='" + data[i]['profile_img'] + "'>" + data[i]['text'] + "</p>");
+                      var child_len = $("#live-tweets-div > p").length;
+                      if (child_len > 50) {
+                        $("#live-tweets-div > p:gt(51)").remove();
+                      }
+                      if (i == (len-1)) {
+                        get_stream();
+                      } else {
+                        loop();
+                        i++
+                      }
+              }, rand);
+          }());
+          $("#ajax-loader").hide();
+        },
+        error: function (result) {
+          console.log("hmm?")
+        }
+      });
     }

@@ -12,6 +12,8 @@ from gensim.models.ldamodel import LdaModel
 from gensim import corpora, models, similarities
 from operator import itemgetter
 
+candidate_slugs = {  "lincolnchafee" : "Lincoln Chafee", "hillaryclinton" : "Hillary Clinton", "martinomalley" : "Martin O'Malley", "berniesanders" : "Bernie Sanders", "bencarson" : "Ben Carson", "tedcruz" : "Ted Cruz", "carlyfiorina" : "Carly Fiorina", "lindseygraham" : "Lindsey Graham", "georgepataki" : "George Pataki", "randpaul" : "Rand Paul", "rickperry" : "Rick Perry", "marcorubio" : "Marco Rubio", "ricksantorum" : "Rick Santorum", "mikehucakbee" : "Mike Huckabee", "jebbush" : "Jeb Bush", "scottwalker" : "Scott Walker", "donaldtrump" : "Donald Trump" }
+
 all_candidates = ["Lincoln Chafee", "Hillary Clinton", "Martin O'Malley", "Bernie Sanders", "Ben Carson", "Ted Cruz", "Carly Fiorina", "Lindsey Graham", "George Pataki", "Rand Paul", "Rick Perry", "Marco Rubio", "Rick Santorum", "Mike Huckabee", "Jeb Bush", "Scott Walker", "Donald Trump"]
 
 top_candidates = ["Hillary Clinton", "Bernie Sanders", "Ben Carson", "Ted Cruz", "Carly Fiorina", "Rand Paul", "Jeb Bush", "Donald Trump"]
@@ -127,33 +129,33 @@ def tweet_booststrapper(dict, n=0):
         return tweet_booststrapper(bootstrap_dict, n)
     return bootstrap_dict
 
-# def get_all_candidates(time=0, n=0, all_results=0):
-#     candidate_tweets = {}
-#     candidate_totals = {}
-#     for key in candidate_search:
-#         total_volume = 0
-#         total_sentiment = 0
-#         total_sent_vol = 0
-#         search_terms = candidate_search[key]
-#         tweets = return_tweets(time, search_terms, all_results)
-#         boosted_tweets = tweet_booststrapper(tweets,n)
-#         candidate_tweets[key] = boosted_tweets
-#         for county in boosted_tweets:
-#             county_volume = boosted_tweets[county]['volume']
-#             county_sentiment = boosted_tweets[county]['sentiment']
-#             total_volume += county_volume
-#             if county_sentiment != None:
-#                 total_sentiment += (county_volume*county_sentiment)
-#                 total_sent_vol += county_volume
-#         candidate_totals[key] = {}
-#         try:
-#             candidate_totals[key]['volume'] = total_volume
-#             candidate_totals[key]['sentiment'] = total_sentiment/total_sent_vol
-#         except:
-#             candidate_totals[key]['volume'] = 0
-#             candidate_totals[key]['sentiment'] = 0
-#     all_data = {"total" : candidate_totals, "county" : candidate_tweets}
-#     return all_data
+def get_candidate_map(time=0, n=0, all_results=1, candidate):
+    all_tweets = []
+    tweet_volume = []
+    tweet_sentiment = []
+    for key in candidate_search:
+        total_volume = 0
+        total_sentiment = 0
+        total_sent_vol = 0
+        search_terms = candidate_search[candidate]
+        tweets = return_tweets(time, search_terms, all_results=all_results)
+        boosted_tweets = tweet_booststrapper(tweets,n)
+        for county in boosted_tweets:
+            county_volume = boosted_tweets[county]['volume']
+            county_sentiment = boosted_tweets[county]['sentiment']
+            total_volume += county_volume
+            if county_sentiment != None:
+                total_sentiment += (county_volume*county_sentiment)
+                total_sent_vol += county_volume
+        candidate_totals[key] = {}
+        try:
+            tweet_volume.append({"id" : key, "rate" : total_volume})
+            tweet_sentiment.append({"id" : key, "rate" : (total_sentiment/total_sent_vol)})
+        except:
+            tweet_volume.append({"id" : key, "rate" : 0})
+            tweet_sentiment.append({"id" : key, "rate" : 0})
+    all_data = {"volume" : tweet_volume, "sentiment" : tweet_sentiment}
+    return all_data
 
 def get_candidates_js_object(time=0, n=0, group_val="top", individual=""):
     candidates_object = []
@@ -179,12 +181,6 @@ def get_candidates_js_object(time=0, n=0, group_val="top", individual=""):
             candidate_dict['value'] = 0
         candidates_object.append(candidate_dict)
     return candidates_object
-
-# def get_all_candidates_daily(time=1):
-#     day_array = {}
-#     for x in range(time):
-#         day_array[x] = get_all_candidates(x)
-#     return day_array
 
 def get_all_candidates_js_objects(time=1, group_val="top", individual=""):
     all_candidates_object = []

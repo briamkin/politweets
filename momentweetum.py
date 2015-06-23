@@ -75,7 +75,30 @@ def candidate(name=None):
     # tweets = { 'data': get_all_candidates_js_objects(10, data['group'], data['individual']) }
     # tweets = get_all_candidates_js_objects(10)
     # tweets = {1:1,2:2,3:3,4:4,5}
-    return render_template('candidate.html', name=name)
+    return render_template('candidate.html', name=candidate_slugs[name])
+
+@app.route("/maps", methods=["POST"])
+def maps():
+    """
+    When A POST request is made to this uri, return all candidate data in the last time period.
+    """
+    data = flask.request.json
+    tweets = get_candidate_map(time=0, n=0, all_results=1, candidate)
+    tweets = { 'data': get_all_candidates_js_objects(10, data['group'], data['individual']) }
+    # tweets = get_all_candidates_js_objects(10)
+    # tweets = {1:1,2:2,3:3,4:4,5}
+    return flask.jsonify(tweets)
+
+@app.route("/map/<name>")
+def map(name=None):
+    """
+    When A POST request is made to this uri, return all candidate data in the last time period.
+    """
+    # data = flask.request.json
+    # tweets = { 'data': get_all_candidates_js_objects(10, data['group'], data['individual']) }
+    # tweets = get_all_candidates_js_objects(10)
+    # tweets = {1:1,2:2,3:3,4:4,5}
+    return render_template('map.html', name=candidate_slugs[name])
 
 @app.route("/stream", methods=["POST"])
 def stream():
