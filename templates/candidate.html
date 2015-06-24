@@ -7,7 +7,8 @@
     {# <p class="show-candidates" data="rep">Show Republican Candidates</p> #}
     <div id="ajax-loader"></div>
     <script>
-    // var pathArray = window.location.pathname.split( '/' );
+    // var pathArray = window.location.pathname.split( '/' )
+    $("#ajax-loader").show();
     function update_candidates(group_val, individual) {
       $.ajax({
         type: "POST",

@@ -129,33 +129,35 @@ def tweet_booststrapper(dict, n=0):
         return tweet_booststrapper(bootstrap_dict, n)
     return bootstrap_dict
 
-def get_candidate_map(time=0, n=0, all_results=1, candidate):
+def get_candidate_map(candidate, time=0, n=0, all_results=1):
     all_tweets = []
-    tweet_volume = []
-    tweet_sentiment = []
-    for key in candidate_search:
-        total_volume = 0
-        total_sentiment = 0
-        total_sent_vol = 0
-        search_terms = candidate_search[candidate]
-        tweets = return_tweets(time, search_terms, all_results=all_results)
-        boosted_tweets = tweet_booststrapper(tweets,n)
-        for county in boosted_tweets:
-            county_volume = boosted_tweets[county]['volume']
-            county_sentiment = boosted_tweets[county]['sentiment']
-            total_volume += county_volume
-            if county_sentiment != None:
-                total_sentiment += (county_volume*county_sentiment)
-                total_sent_vol += county_volume
-        candidate_totals[key] = {}
+    tweet_volume = [{"id" : "rate"}]
+    tweet_sentiment = [{"id" : "rate"}]
+
+    total_volume = 0
+    total_sentiment = 0
+    total_sent_vol = 0
+    search_terms = candidate_search[candidate]
+    tweets = return_tweets(time, search_terms, all_results=all_results)
+    boosted_tweets = tweet_booststrapper(tweets,n)
+    for county in boosted_tweets:
+        county_volume = boosted_tweets[county]['volume']
+        county_sentiment = boosted_tweets[county]['sentiment']
+        total_volume += county_volume
+        if county_sentiment == None:
+            county_sentiment = 0;
+            # total_sentiment += (county_volume*county_sentiment)
+            # total_sent_vol += county_volume
         try:
-            tweet_volume.append({"id" : key, "rate" : total_volume})
-            tweet_sentiment.append({"id" : key, "rate" : (total_sentiment/total_sent_vol)})
+            tweet_volume.append({"id" : county, "rate" : county_volume})
+            tweet_sentiment.append({"id" : county, "rate" : county_sentiment})
         except:
-            tweet_volume.append({"id" : key, "rate" : 0})
-            tweet_sentiment.append({"id" : key, "rate" : 0})
+            tweet_volume.append({"id" : county, "rate" : 0})
+            tweet_sentiment.append({"id" : county, "rate" : 0})
     all_data = {"volume" : tweet_volume, "sentiment" : tweet_sentiment}
-    return all_data
+    # return all_data
+    with open('boosted_sentiment.tsv', 'w') as f:
+        [f.write('{0}\t{1}\n'.format(key, value)) for key, value in boosted_sentiment.items()]
 
 def get_candidates_js_object(time=0, n=0, group_val="top", individual=""):
     candidates_object = []
@@ -188,26 +190,34 @@ def get_all_candidates_js_objects(time=1, group_val="top", individual=""):
         all_candidates_object += get_candidates_js_object(x, 0, group_val, individual)
     return all_candidates_object
 
-def get_topics(candidate):
-    client = MongoClient()
-    tweets = client.fletcher.tweets
-    tweets = tweets.aggregate([{"$match":{"$text":{"$search":candidate_search[candidate]}}}])
-    documents = []
-    pattern = re.compile("[^a-zA-Z ]")
-    for tweet in tweets:
-        documents.append(pattern.sub('', tweet['text']))
-    stoplist = set(candidate_stop_words[candidate] + stopwords)
-    texts = [[word for word in document.lower().split() if word not in stoplist]
-            for document in documents]
-    frequency = defaultdict(int)
-    for text in texts:
-        for token in text:
-            frequency[token] += 1
-    texts = [[token for token in text if frequency[token] > 1]
-            for text in texts]
-    dictionary = corpora.Dictionary(texts)
-    lda = LdaModel(corpus=corpus, id2word=dictionary, num_topics=n, update_every=1, chunksize=10000, passes=10)
-    return lda.print_topics(n)
+def get_topics(candidate, day):
+    start_time = datetime.strptime(day, "%Y-%m-%d").date()
+    start_time = int(start_time.strftime('%s'))*1000
+    end_time = start_time + 86399999
+    try:
+        client = MongoClient()
+        tweets = client.fletcher.tweets
+        # tweets = tweets.aggregate([{"$match":{"$text":{"$search":candidate_search[candidate]}}}])
+        tweets = tweets.aggregate([{"$match":{"$text":{"$search":candidate_search[candidate]}}},
+                                   {"$match":{"timestamp_ms":{"$gte":start_time,"$lt":end_time}}}])
+        documents = []
+        pattern = re.compile("[^a-zA-Z ]")
+        for tweet in tweets:
+            documents.append(pattern.sub('', tweet['text']))
+        stoplist = set(candidate_stop_words[candidate] + stopwords)
+        texts = [[word for word in document.lower().split() if word not in stoplist]
+                for document in documents]
+        frequency = defaultdict(int)
+        for text in texts:
+            for token in text:
+                frequency[token] += 1
+        texts = [[token for token in text if frequency[token] > 1]
+                for text in texts]
+        dictionary = corpora.Dictionary(texts)
+        lda = LdaModel(corpus=corpus, id2word=dictionary, num_topics=3, update_every=1, chunksize=10000, passes=10)
+        return lda.print_topics(3)
+    except:
+        return None
 
 def get_topic_dictionary(candidate, day):
     start_time = datetime.strptime(day, "%Y-%m-%d").date()

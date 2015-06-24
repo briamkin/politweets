@@ -29,7 +29,7 @@ def home():
     #     return file.read()
     return render_template('index.html')
 
-# Get an example and return it's score from the predictor model
+
 @app.route("/wordcloud", methods=["POST"])
 def wordcloud():
     """
@@ -83,10 +83,10 @@ def maps():
     When A POST request is made to this uri, return all candidate data in the last time period.
     """
     data = flask.request.json
-    tweets = get_candidate_map(time=0, n=0, all_results=1, candidate)
-    tweets = { 'data': get_all_candidates_js_objects(10, data['group'], data['individual']) }
+    tweets = get_candidate_map(data['candidate'], 0, 0, 1)
+    # tweets = { 'data': get_all_candidates_js_objects(10, data['group'], data['individual']) }
     # tweets = get_all_candidates_js_objects(10)
-    # tweets = {1:1,2:2,3:3,4:4,5}
+    # tweets = {1:1,2:2,3:3,4:4}
     return flask.jsonify(tweets)
 
 @app.route("/map/<name>")
