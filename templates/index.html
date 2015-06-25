@@ -12,9 +12,11 @@
     $(document).on("click",".candidate-block", function(){
       var this_date = $(this).attr("date");
       var candidate = $(this).parent().attr("candidate");
-      $("svg").remove();
-      $("#ajax-loader").show();
-      create_word_cloud(this_date, candidate);
+      candidate = return_candidate_short_name(candidate);
+      window.location = "/map/" + candidate + "/" + this_date;
+      // $("svg").remove();
+      // $("#ajax-loader").show();
+      // create_word_cloud(this_date, candidate);
     });
 
     $(".show-candidates").click(function(){

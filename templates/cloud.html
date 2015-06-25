@@ -1,0 +1,11 @@
+{% extends "layout.html" %}
+{% block content %}
+    <p class="map_btn" id="map_btn">Back to Map</p>
+    <script>
+    var pathArray = window.location.pathname.split( '/' );
+    create_word_cloud('{{date}}', '{{candidate}}');
+    $("#map_btn").click(function() {
+        window.location = "/map/" + pathArray[2] + "/" + pathArray[3];
+    });
+    </script>
+{% endblock %}

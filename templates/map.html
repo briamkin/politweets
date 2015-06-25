@@ -1,68 +1,26 @@
 {% extends "layout.html" %}
 {% block content %}
+    <p class="map_btn" id="sentiment_btn">Sentiment</p>
+    <p class="map_btn" id="volume_btn">Volume</p>
+    <p class="map_btn" id="cloud_btn">Cloud</p>
     <div id="map"></div>
     <script>
-    function create_map() {
-      var width = 960,
-          height = 600;
 
-      var rateById = d3.map();
+    var pathArray = window.location.pathname.split( '/' );
+    create_map(pathArray[2], pathArray[3], "sentiment");
+    $("#sentiment_btn").click(function() {
+        $("#map").html("");
+        create_map(pathArray[2], pathArray[3], "sentiment")
+    });
 
-      var quantize = d3.scale.quantize()
-          .domain([0, .15])
-          .range(d3.range(9).map(function(i) { return "q" + i + "-9"; }));
+    $("#volume_btn").click(function() {
+        $("#map").html("");
+        create_map(pathArray[2], pathArray[3], "volume")
+    });
 
-      var projection = d3.geo.albersUsa()
-          .scale(1280)
-          .translate([width / 2, height / 2]);
+    $("#cloud_btn").click(function() {
+        window.location = "/cloud/" + pathArray[2] + "/" + pathArray[3];
+    });
 
-      var path = d3.geo.path()
-          .projection(projection);
-
-      var svg = d3.select("#map").append("svg")
-          .attr("width", width)
-          .attr("height", height);
-
-      queue()
-          .defer(d3.json, "/static/us.json")
-          .defer(d3.tsv, "/static/clinton_sentiment_tweets.tsv", function(d) { rateById.set(d.id, +d.rate); })
-          .await(ready);
-
-      function ready(error, us) {
-        if (error) throw error;
-
-        svg.append("g")
-            .attr("class", "counties")
-          .selectAll("path")
-            .data(topojson.feature(us, us.objects.counties).features)
-          .enter().append("path")
-            .attr("class", function(d) { return quantize(rateById.get(d.id)); })
-            .attr("d", path);
-
-        svg.append("path")
-            .datum(topojson.mesh(us, us.objects.states, function(a, b) { return a !== b; }))
-            .attr("class", "states")
-            .attr("d", path);
-      }
-
-      d3.select(self.frameElement).style("height", height + "px");
-    }
-    create_map();
-      // $.ajax({
-      //   type: "POST",
-      //   contentType: "application/json; charset=utf-8",
-      //   url: "/maps",
-      //   dataType: "json",
-      //   async: true,
-      //   data: '{"candidate" :"' + '{{ name }}' + '"}',
-      //   success: function (results) {
-      //     data = results['volume'];
-      //     console.log(results)
-      //     create_map(data)
-      //   },
-      //   error: function (result) {
-      //     console.log("hmm?")
-      //   }
-      // });
     </script>
 {% endblock %}

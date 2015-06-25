@@ -7,6 +7,7 @@ from twitter_functions import *
 import math
 from datetime import date, timedelta, datetime
 import re
+import os
 from collections import defaultdict
 from gensim.models.ldamodel import LdaModel
 from gensim import corpora, models, similarities
@@ -56,6 +57,43 @@ def return_last_tweets():
     sorted_tweets = sorted(tweets, key=itemgetter('timestamp'))
     return sorted_tweets
 
+def return_map_tweets(day, candidate="", all_results=0):
+    start_time = datetime.strptime(day, "%Y-%m-%d").date()
+    start_time = int(start_time.strftime('%s'))*1000
+    end_time = start_time + 86399999
+    if all_results==1:
+        start_time = 0
+        end_time = (today_epoch+86400)*1000
+    client = MongoClient()
+    db = client.fletcher.tweets
+    tweets = {}
+    if candidate != "":
+        query = db.aggregate([
+            {"$match":{"$text":{"$search":candidate_search[candidate_slugs[candidate]]}}},
+            {"$match":{"timestamp_ms":{"$gte":start_time,"$lt":end_time}}}])
+    else:
+        query = db.aggregate([
+            {"$match":{"timestamp_ms":{"$gte":start_time,"$lt":end_time}}}])
+    for tweet in query:
+        fips = tweet['fips']
+        if fips in tweets:
+            tweets[fips]['volume'] += 1
+            try:
+                tweets[fips]['sentiment'] += tweet['sentiment']['compound']
+            except:
+                pass
+        else:
+            tweets[fips] = {}
+            tweets[fips]['volume'] = 1
+            try:
+                tweets[fips]['sentiment'] = tweet['sentiment']['compound']
+            except:
+                tweets[fips]['sentiment'] = 0
+    for x in tweets:
+        tweets[x]['sentiment'] = tweets[x]['sentiment']/tweets[x]['volume']
+
+    return tweets
+
 def return_tweets(day, search_terms="", all_results=0):
     today_epoch = int(date.today().strftime('%s'))
     start_time = (today_epoch - (day*86400))*1000
@@ -93,7 +131,7 @@ def return_tweets(day, search_terms="", all_results=0):
 
     return tweets
 
-def tweet_booststrapper(dict, n=5):
+def tweet_bootstrapper(dict, n=0):
     bootstrap_dict = {}
     for key in all_fips:
         try:
@@ -125,7 +163,7 @@ def tweet_booststrapper(dict, n=5):
         bootstrap_dict[key]['sentiment'] = new_sent
     if n > 0:
         n -= 1
-        return tweet_booststrapper(bootstrap_dict, n)
+        return tweet_bootstrapper(bootstrap_dict, n)
     for key in bootstrap_dict:
         bootstrap_sent = bootstrap_dict[key]['sentiment']
         if bootstrap_sent < 0:
@@ -136,50 +174,39 @@ def tweet_booststrapper(dict, n=5):
         bootstrap_dict[key]['volume'] *= 1500
     return bootstrap_dict
 
-# def convert_tweet_boostrapper_to_tsv(bootstrap_dict):
-#     dicts = {}
-#     sentiment_dict = [{'id' : 'id', 'rate' : 'rate'}]
-#     volume_dict = [{'id' : 'id', 'rate' : 'rate'}]
-#     for key in all_fips:
-#         try:
-#             sentiment_dict.append({"id":key,"rate":bootstrap_dict[key]['sentiment']})
-#         except:
-#             sentiment_dict.append({"id":key,"rate":0})
-#         try:
-#             volume_dict.append({"id":key,"rate":bootstrap_dict[key]['volume']})
-#         except:
-#             volume_dict.append({"id":key,"rate":0})
-#     return {"sentiment": sentiment_dict, "volume": volume_dict}
-
-def get_candidate_map(candidate, time=0, n=0, all_results=1):
-    all_tweets = []
-    tweet_volume = [{"id" : "rate"}]
-    tweet_sentiment = [{"id" : "rate"}]
-
-    total_volume = 0
-    total_sentiment = 0
-    total_sent_vol = 0
-    search_terms = candidate_search[candidate]
-    tweets = return_tweets(time, search_terms, all_results=all_results)
-    boosted_tweets = tweet_booststrapper(tweets,n)
-    for county in boosted_tweets:
-        county_volume = boosted_tweets[county]['volume']
-        county_sentiment = boosted_tweets[county]['sentiment']
-        total_volume += county_volume
-        if county_sentiment == None:
-            county_sentiment = 0;
-            # total_sentiment += (county_volume*county_sentiment)
-            # total_sent_vol += county_volume
+def convert_tweet_bootstrapper_to_tsv(bootstrap_dict):
+    dicts = {}
+    sentiment_dict = [{'id' : 'id', 'rate' : 'rate'}]
+    volume_dict = [{'id' : 'id', 'rate' : 'rate'}]
+    for key in all_fips:
         try:
-            tweet_volume.append({"id" : county, "rate" : county_volume})
-            tweet_sentiment.append({"id" : county, "rate" : county_sentiment})
+            sentiment_dict.append({"id":key,"rate":bootstrap_dict[key]['sentiment']})
         except:
-            tweet_volume.append({"id" : county, "rate" : 0})
-            tweet_sentiment.append({"id" : county, "rate" : 0})
-    all_data = {"volume" : tweet_volume, "sentiment" : tweet_sentiment}
-    # return all_data
-    with open('boosted_sentiment.tsv', 'w') as f:
-        [f.write('{0}\t{1}\n'.format(key, value)) for key, value in boosted_sentiment.items()]
+            sentiment_dict.append({"id":key,"rate":0})
+        try:
+            volume_dict.append({"id":key,"rate":bootstrap_dict[key]['volume']})
+        except:
+            volume_dict.append({"id":key,"rate":0})
+    return {"sentiment": sentiment_dict, "volume": volume_dict}
+
+def write_map_tsv(day, candidate, file_name):
+    tweets = return_map_tweets(day, candidate)
+    tweets = tweet_bootstrapper(tweets,3)
+    bootstrapped_tweets = convert_tweet_bootstrapper_to_tsv(tweets)
+    with open('static/' + file_name + '_sentiment.tsv', 'w') as f:
+        [f.write('{0}\t{1}\n'.format(key['id'], key['rate'])) for key in bootstrapped_tweets['sentiment']]
+    with open('static/' + file_name + '_volume.tsv', 'w') as f:
+        [f.write('{0}\t{1}\n'.format(key['id'], key['rate'])) for key in bootstrapped_tweets['volume']]
+
+def create_map_tsv(day, candidate):
+    file_name = day + "_" + candidate
+    if day != 0:
+        if os.path.exists("/static/" + file_name + "sentiment.tsv"):
+            pass
+        else:
+            write_map_tsv(day, candidate, file_name)
+    else:
+        write_map_tsv(day, candidate, file_name)
 
 def get_candidates_js_object(time=0, n=0, group_val="top", individual=""):
     candidates_object = []
@@ -194,7 +221,7 @@ def get_candidates_js_object(time=0, n=0, group_val="top", individual=""):
         total_sent_vol = 0
         search_terms = candidate_search[key]
         tweets = return_tweets(time, search_terms)
-        boosted_tweets = tweet_booststrapper(tweets,n)
+        boosted_tweets = tweet_bootstrapper(tweets,n)
         candidate_dict = { "group" : key, "date" : js_date }
         for county in boosted_tweets:
             county_volume = boosted_tweets[county]['volume']
@@ -220,7 +247,7 @@ def get_topics(candidate, day):
         client = MongoClient()
         tweets = client.fletcher.tweets
         # tweets = tweets.aggregate([{"$match":{"$text":{"$search":candidate_search[candidate]}}}])
-        tweets = tweets.aggregate([{"$match":{"$text":{"$search":candidate_search[candidate]}}},
+        tweets = tweets.aggregate([{"$match":{"$text":{"$search":candidate_search[candidate_slugs[candidate]]}}},
                                    {"$match":{"timestamp_ms":{"$gte":start_time,"$lt":end_time}}}])
         documents = []
         pattern = re.compile("[^a-zA-Z ]")
@@ -247,7 +274,7 @@ def get_topic_dictionary(candidate, day):
     end_time = start_time + 86399999
     client = MongoClient()
     tweets = client.fletcher.tweets
-    tweets = tweets.aggregate([{"$match":{"$text":{"$search":candidate_search[candidate]}}},
+    tweets = tweets.aggregate([{"$match":{"$text":{"$search":candidate_search[candidate_slugs[candidate]]}}},
                                {"$match":{"timestamp_ms":{"$gte":start_time,"$lt":end_time}}}])
     documents = []
     pattern = re.compile("[^a-zA-Z ]")
@@ -256,7 +283,7 @@ def get_topic_dictionary(candidate, day):
             documents.append(pattern.sub('', tweet['text']))
         except:
             continue
-    stoplist = set(candidate_stop_words[candidate] + stopwords)
+    stoplist = set(candidate_stop_words[candidate_slugs[candidate]] + stopwords)
     texts = [[word for word in document.lower().split() if word not in stoplist]
             for document in documents]
     frequency = defaultdict(int)

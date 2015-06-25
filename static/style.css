@@ -130,3 +130,17 @@ g.group {
   display: block;
   margin-top: 70px;
 }
+
+.map_btn {
+  display: block;
+  background-color: #000;
+  color: #fff;
+  padding: 5px;
+  width: 100px;
+  text-align: center;
+  float: left;
+  cursor: pointer;
+  margin-left: 50px;
+  margin-top: -10px;
+  text-decoration: none;
+}
