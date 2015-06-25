@@ -1,18 +1,14 @@
 {% extends "layout.html" %}
 {% block content %}
-    <h1>Presidential Candidate Tracker</h1>
-    {# <p class="show-candidates" data="all">Show All Candidates</p> #}
-    <p class="show-candidates" data="top">Top Candidates</p>
-    {# <p class="show-candidates" data="dem">Show Democratic Candidates</p> #}
-    {# <p class="show-candidates" data="rep">Show Republican Candidates</p> #}
+
     <div id="main-img-div"><img><p></p></div>
     <div id="live-tweets-div"><span>Live Streaming Tweets about the 2016 Election Candidates</span></div>
     <div id="ajax-loader"></div>
     <script>
 
+    $("#ajax-loader").show();
     update_candidates("top", "");
     get_stream();
-
     $(document).on("click",".candidate-block", function(){
       var this_date = $(this).attr("date");
       var candidate = $(this).parent().attr("candidate");

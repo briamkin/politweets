@@ -44,6 +44,11 @@ g.group {
   z-index: 100;
 }
 
+.politweets-logo {
+  display: block;
+  width: 470px;
+}
+
 .show-candidates {
   cursor: pointer;
   float: left;
@@ -119,3 +124,9 @@ g.group {
 .q6-9 { fill:rgb(33,113,181); }
 .q7-9 { fill:rgb(8,81,156); }
 .q8-9 { fill:rgb(8,48,107); }
+
+#map {
+  background-color: #aaa;
+  display: block;
+  margin-top: 70px;
+}

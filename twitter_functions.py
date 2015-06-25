@@ -93,7 +93,7 @@ def return_tweets(day, search_terms="", all_results=0):
 
     return tweets
 
-def tweet_booststrapper(dict, n=0):
+def tweet_booststrapper(dict, n=5):
     bootstrap_dict = {}
     for key in all_fips:
         try:
@@ -101,15 +101,14 @@ def tweet_booststrapper(dict, n=0):
             sentiment = dict[key]['sentiment']
         except:
             volume = 0
-            sentiment = None
+            sentiment = 0
         if volume < 100:
             new_sent, new_vol, weight, new_mult = 0, 0, 10, 0
             for county in nearest_counties[key]:
                 try:
-                    vol = dict[county]['volume']*weight
-                    new_vol += vol
-                    new_sent += dict[county]['sentiment']*multiplier
-                    new_mult += multiplier
+                    new_vol += dict[county]['volume']*weight
+                    new_sent += dict[county]['sentiment']*weight
+                    new_mult += weight
                 except:
                     pass
                 weight -= 1
@@ -127,7 +126,30 @@ def tweet_booststrapper(dict, n=0):
     if n > 0:
         n -= 1
         return tweet_booststrapper(bootstrap_dict, n)
+    for key in bootstrap_dict:
+        bootstrap_sent = bootstrap_dict[key]['sentiment']
+        if bootstrap_sent < 0:
+            bootstrap_sent = -((-bootstrap_sent)**(0.3))
+        else:
+            bootstrap_sent **= (0.3)
+        bootstrap_dict[key]['sentiment'] = bootstrap_sent
+        bootstrap_dict[key]['volume'] *= 1500
     return bootstrap_dict
+
+# def convert_tweet_boostrapper_to_tsv(bootstrap_dict):
+#     dicts = {}
+#     sentiment_dict = [{'id' : 'id', 'rate' : 'rate'}]
+#     volume_dict = [{'id' : 'id', 'rate' : 'rate'}]
+#     for key in all_fips:
+#         try:
+#             sentiment_dict.append({"id":key,"rate":bootstrap_dict[key]['sentiment']})
+#         except:
+#             sentiment_dict.append({"id":key,"rate":0})
+#         try:
+#             volume_dict.append({"id":key,"rate":bootstrap_dict[key]['volume']})
+#         except:
+#             volume_dict.append({"id":key,"rate":0})
+#     return {"sentiment": sentiment_dict, "volume": volume_dict}
 
 def get_candidate_map(candidate, time=0, n=0, all_results=1):
     all_tweets = []

@@ -1,10 +1,8 @@
 {% extends "layout.html" %}
 {% block content %}
-    <h1>Presidential Candidate Tracker</h1>
-    <p class="show-candidates" data="top">Top Candidates</p>
-    <div id="ajax-loader"></div>
+    <div id="map"></div>
     <script>
-    function create_map(data) {
+    function create_map() {
       var width = 960,
           height = 600;
 
@@ -21,14 +19,13 @@
       var path = d3.geo.path()
           .projection(projection);
 
-      var svg = d3.select("body").append("svg")
+      var svg = d3.select("#map").append("svg")
           .attr("width", width)
           .attr("height", height);
 
       queue()
           .defer(d3.json, "/static/us.json")
-          // .defer(d3.tsv, "candidate_csv.tsv", function(d) { rateById.set(d.id, +d.rate); })
-          // .defer(data)
+          .defer(d3.tsv, "/static/clinton_sentiment_tweets.tsv", function(d) { rateById.set(d.id, +d.rate); })
           .await(ready);
 
       function ready(error, us) {
@@ -50,22 +47,22 @@
 
       d3.select(self.frameElement).style("height", height + "px");
     }
-
-      $.ajax({
-        type: "POST",
-        contentType: "application/json; charset=utf-8",
-        url: "/maps",
-        dataType: "json",
-        async: true,
-        data: '{"candidate" :"' + '{{ name }}' + '"}',
-        success: function (results) {
-          data = results['volume'];
-          console.log(results)
-          create_map(data)
-        },
-        error: function (result) {
-          console.log("hmm?")
-        }
-      });
+    create_map();
+      // $.ajax({
+      //   type: "POST",
+      //   contentType: "application/json; charset=utf-8",
+      //   url: "/maps",
+      //   dataType: "json",
+      //   async: true,
+      //   data: '{"candidate" :"' + '{{ name }}' + '"}',
+      //   success: function (results) {
+      //     data = results['volume'];
+      //     console.log(results)
+      //     create_map(data)
+      //   },
+      //   error: function (result) {
+      //     console.log("hmm?")
+      //   }
+      // });
     </script>
 {% endblock %}
