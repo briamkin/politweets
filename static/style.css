@@ -144,3 +144,19 @@ g.group {
   margin-top: -10px;
   text-decoration: none;
 }
+
+.topics {
+  clear: both;
+  margin-top: 30px;
+  display: block;
+}
+
+.topic-header {
+  clear: both;
+  display: block;
+  margin-top: 30px;
+}
+
+#topic1-header {
+  margin-top: 80px;
+}

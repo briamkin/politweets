@@ -43,6 +43,22 @@ def wordcloud():
     topics = { 'data' : get_topic_dictionary(data['candidate'],data['date']) }
     return flask.jsonify(topics)
 
+@app.route("/topic/<candidate>/<date>")
+def topic(candidate=None,date=None):
+    """
+    When A POST request is made to this uri, return all candidate data in the last time period.
+    """
+    return render_template('topics.html', candidate=candidate, date=date)
+
+@app.route("/topics", methods=["POST"])
+def topics():
+    """
+    When A POST request is made to this uri, return the momentum.
+    """
+    data = flask.request.json
+    topics = { 'data' : get_topics(data['candidate'],data['date']) }
+    return flask.jsonify(topics)
+
 @app.route("/tweets", methods=["POST"])
 def tweets():
     """

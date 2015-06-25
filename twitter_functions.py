@@ -246,14 +246,14 @@ def get_topics(candidate, day):
     try:
         client = MongoClient()
         tweets = client.fletcher.tweets
-        # tweets = tweets.aggregate([{"$match":{"$text":{"$search":candidate_search[candidate]}}}])
-        tweets = tweets.aggregate([{"$match":{"$text":{"$search":candidate_search[candidate_slugs[candidate]]}}},
-                                   {"$match":{"timestamp_ms":{"$gte":start_time,"$lt":end_time}}}])
+        tweets = tweets.aggregate([
+            {"$match":{"$text":{"$search":candidate_search[candidate_slugs[candidate]]}}},
+            {"$match":{"timestamp_ms":{"$gte":start_time,"$lt":end_time}}}])
         documents = []
         pattern = re.compile("[^a-zA-Z ]")
         for tweet in tweets:
             documents.append(pattern.sub('', tweet['text']))
-        stoplist = set(candidate_stop_words[candidate] + stopwords)
+        stoplist = set(candidate_stop_words[candidate_slugs[candidate]] + stopwords)
         texts = [[word for word in document.lower().split() if word not in stoplist]
                 for document in documents]
         frequency = defaultdict(int)
@@ -263,6 +263,7 @@ def get_topics(candidate, day):
         texts = [[token for token in text if frequency[token] > 1]
                 for text in texts]
         dictionary = corpora.Dictionary(texts)
+        corpus = [dictionary.doc2bow(text) for text in texts]
         lda = LdaModel(corpus=corpus, id2word=dictionary, num_topics=3, update_every=1, chunksize=10000, passes=10)
         return lda.print_topics(3)
     except:

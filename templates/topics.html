@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+{% block content %}
+    <p class="map_btn" id="map_btn">Back to Map</p>
+    <h2 class="topic-header" id="topic1-header">Topic 1</h2>
+    <div class="topics" id="topic1"></div>
+    <h2 class="topic-header" id="topic2-header">Topic 2</h2>
+    <div class="topics" id="topic2"></div>
+    <h2 class="topic-header" id="topic3-header">Topic 3</h2>
+    <div class="topics" id="topic3"></div>
+    <script>
+    var pathArray = window.location.pathname.split( '/' );
+    function create_topics(date, candidate) {
+      $.ajax({
+        type: "POST",
+        contentType: "application/json; charset=utf-8",
+        url: "/topics",
+        dataType: "json",
+        async: true,
+        data: '{"date" :"' + String(date) + '","candidate" : "' + String(candidate) +  '"}',
+        success: function (results) {
+          data = results['data'];
+          $("#topic1").html(get_topics(data[0]));
+          $("#topic2").html(get_topics(data[1]));
+          $("#topic3").html(get_topics(data[2]));
+        },
+        error: function (result) {
+          console.log("hmm?")
+        }
+      });
+    }
+
+    create_topics('{{date}}', '{{candidate}}');
+
+    $("#map_btn").click(function() {
+        window.location = "/map/" + pathArray[2] + "/" + pathArray[3];
+    });
+    </script>
+{% endblock %}

@@ -3,6 +3,7 @@
     <p class="map_btn" id="sentiment_btn">Sentiment</p>
     <p class="map_btn" id="volume_btn">Volume</p>
     <p class="map_btn" id="cloud_btn">Cloud</p>
+    <p class="map_btn" id="topic_btn">Topics</p>
     <div id="map"></div>
     <script>
 
@@ -20,6 +21,10 @@
 
     $("#cloud_btn").click(function() {
         window.location = "/cloud/" + pathArray[2] + "/" + pathArray[3];
+    });
+
+    $("#topic_btn").click(function() {
+        window.location = "/topic/" + pathArray[2] + "/" + pathArray[3];
     });
 
     </script>

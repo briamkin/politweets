@@ -242,6 +242,21 @@
       });
     }
 
+    function get_topics(arr) {
+        var test_split = arr.split("*");
+        var new_array = [];
+        for (var i = 1; i<test_split.length; i++) {
+            new_split = test_split[i].split(" +");
+            new_array.push(new_split[0]);
+        }
+        topics = "";
+        for (var i = 0; i<new_array.length; i++) {
+          topics += new_array[i];
+          topics += " ";
+        }
+        return topics;
+    }
+
     function create_map(candidate, date, type) {
       var width = 960,
           height = 600;
