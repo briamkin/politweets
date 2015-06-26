@@ -298,7 +298,3 @@ def get_topic_dictionary(candidate, day):
     for item in dictionary.items():
         topics.append({"text" : item[1], "size" : item[0]})
     return topics
-
-
-
-

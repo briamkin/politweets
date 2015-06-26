@@ -2,5 +2,6 @@ geo.pyc
 *.pyc
 *.ipynb
 ipynb
-ipynb/
+ipynb/*
 .ipynb_checkpoints
+tsv/*
