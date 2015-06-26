@@ -30,40 +30,6 @@ access_token_secret = config['access_token_secret']
 consumer_key = config['consumer_key']
 consumer_secret = config['consumer_secret']
 
-# def backup_mongo_daily(timestamp, mongo_client):
-#     twitter_time = datetime.datetime.fromtimestamp(timestamp/1000)
-#     current_time = datetime.datetime.today()
-#     file_name = str(twitter_time.year) + str(twitter_time.month) + str(twitter_time.day - 1) + "_tweets.json"
-#     try:
-#         if (not os.path.isfile("mongo_backups/" + file_name)):
-#             if (twitter_time.year == current_time.year and
-#                 twitter_time.month == current_time.month and
-#                 twitter_time.day == current_time.day and
-#                 twitter_time.hour == current_time.hour and
-#                 twitter_time.minute == current_time.minute):
-
-#                 end = current_time - datetime.timedelta(1)
-#                 start = current_time - datetime.timedelta(2)
-#                 end_time = int(end.strftime("%s")) * 1000
-#                 start_time = int(start.strftime("%s")) * 1000
-#                 tweets = mongo_client.fletcher.tweets
-#                 backup = tweets.aggregate([
-#                             {"$match" :
-#                                  {"timestamp_ms":
-#                                     {"$gte" : start_time,"$lt" : end_time}
-#                                  }
-#                             },
-#                         ])
-#                 backup_json = dumps(backup)
-#                 with open("mongo_backups/" + file_name, 'w') as f:
-#                     json.dump(backup_json, f)
-#         else:
-#             pass
-#     except Exception:
-#         logger.exception("Error creating backup")
-#         pass
-
-
 class StdOutListener(StreamListener):
 
     def on_data(self, data):

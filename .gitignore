@@ -1,0 +1,5 @@
+geo.pyc
+*.pyc
+*.ipynb
+ipynb
+ipynb/
