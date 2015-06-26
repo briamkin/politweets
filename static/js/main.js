@@ -13,8 +13,6 @@
     }());
 
     function create_stacks(data) {
-      $("#ajax-loader").show();
-
       var parseDate = d3.time.format("%Y-%m-%d").parse,
           formatDate = function(d) { return d.getFullYear() + "/" + (d.getMonth()+1) + "/" + d.getDate(); };
 
@@ -30,20 +28,10 @@
       var x = d3.scale.ordinal()
           .rangeRoundBands([0, width], .1, 0);
 
-      // var y = d3.scale.linear()
-      //     .domain([0, height / 5])
-      //     .range([310, 0]);
-
       var xAxis = d3.svg.axis()
           .scale(x)
           .orient("bottom")
           .tickFormat(formatDate);
-
-      // var yAxis = d3.svg.axis()
-      //     .scale(y)
-      //     .orient("left")
-      //     .ticks(5)
-      //     .tickSize(-width);
 
       var nest = d3.nest()
           .key(function(d) { return d.group; });
@@ -74,7 +62,6 @@
           .attr("class", "group")
           .attr("candidate", function(d) { return d.key; })
           .attr("transform", function(d) { return "translate(0," + y0(d.key) + ")"; });
-          // .call(yAxis);
 
       group.append("text")
           .attr("class", "group-label")
@@ -98,33 +85,7 @@
           .attr("class", "x axis")
           .attr("transform", "translate(0," + (y0.rangeBand() + 10) + ")")
           .call(xAxis);
-
-      $("#ajax-loader").hide();
     }
-
-    function update_map(hours, search_terms) {
-      $.ajax({
-        type: "POST",
-        contentType: "application/json; charset=utf-8",
-        url: "/tweets",
-        dataType: "json",
-        async: true,
-        data: '{"hrs":' + String(hours) + ', "search":"' + String(search_terms) + '"}',
-        // data: '{"hrs":' + String(30) + ', "search":"' + String("nba, cavs, warriors, finals") + '"}',
-        success: function (data) {
-          console.log(Object.size(data))
-          console.log(data)
-        },
-        error: function (result) {
-          console.log("hmm?")
-        }
-        // complete: function () {
-        //   setTimeout(update_map, 5000)
-        // }
-      });
-    }
-
-    // update_map(100, "jurassic");
 
     function update_candidates(group_val, individual) {
       $.ajax({
@@ -136,11 +97,10 @@
         data: '{"group" :"' + group_val + '", "individual" :"' + individual + '"}',
         success: function (results) {
           data = results['data'];
-          console.log(results)
           create_stacks(data)
         },
         error: function (result) {
-          console.log("hmm?")
+          console.log("update candidates error");
         }
       });
     }
@@ -196,11 +156,9 @@
         success: function (results) {
           data = results['data'];
           generate_word_cloud(data)
-          $("#ajax-loader").hide();
         },
         error: function (result) {
-          console.log("hmm?")
-          $("#ajax-loader").hide();
+          console.log("word cloud error");
         }
       });
     }
@@ -214,10 +172,8 @@
         async: true,
         success: function (results) {
           data = results['tweets'];
-          console.log(data);
           var i = 0;
           var len = data.length;
-
           (function loop() {
               var rand = Math.round(Math.random() * 10000);
               setTimeout(function() {
@@ -234,10 +190,9 @@
                       }
               }, rand);
           }());
-          $("#ajax-loader").hide();
         },
         error: function (result) {
-          console.log("hmm?")
+          console.log("stream error");
         }
       });
     }
@@ -279,13 +234,12 @@
           .attr("height", height);
 
       queue()
-          .defer(d3.json, "/static/us.json")
-          .defer(d3.tsv, "/static/" + date + "_" + candidate + "_" + type + ".tsv", function(d) { rateById.set(d.id, +d.rate); })
+          .defer(d3.json, "/static/json/us.json")
+          .defer(d3.tsv, "/static/tsv/" + date + "_" + candidate + "_" + type + ".tsv", function(d) { rateById.set(d.id, +d.rate); })
           .await(ready);
 
       function ready(error, us) {
         if (error) throw error;
-
         svg.append("g")
             .attr("class", "counties")
           .selectAll("path")
@@ -299,6 +253,5 @@
             .attr("class", "states")
             .attr("d", path);
       }
-
       d3.select(self.frameElement).style("height", height + "px");
     }

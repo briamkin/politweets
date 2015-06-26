@@ -189,24 +189,24 @@ def convert_tweet_bootstrapper_to_tsv(bootstrap_dict):
             volume_dict.append({"id":key,"rate":0})
     return {"sentiment": sentiment_dict, "volume": volume_dict}
 
-def write_map_tsv(day, candidate, file_name):
+def write_map_tsv(day, candidate, file_name, recursive):
     tweets = return_map_tweets(day, candidate)
-    tweets = tweet_bootstrapper(tweets,3)
+    tweets = tweet_bootstrapper(tweets,recursive)
     bootstrapped_tweets = convert_tweet_bootstrapper_to_tsv(tweets)
-    with open('static/' + file_name + '_sentiment.tsv', 'w') as f:
+    with open('static/tsv/' + file_name + '_sentiment.tsv', 'w') as f:
         [f.write('{0}\t{1}\n'.format(key['id'], key['rate'])) for key in bootstrapped_tweets['sentiment']]
-    with open('static/' + file_name + '_volume.tsv', 'w') as f:
+    with open('static/tsv/' + file_name + '_volume.tsv', 'w') as f:
         [f.write('{0}\t{1}\n'.format(key['id'], key['rate'])) for key in bootstrapped_tweets['volume']]
 
-def create_map_tsv(day, candidate):
+def create_map_tsv(day, candidate, recursive):
     file_name = day + "_" + candidate
     if day != 0:
-        if os.path.exists("/static/" + file_name + "sentiment.tsv"):
+        if os.path.exists("/static/tsv/" + file_name + "sentiment.tsv"):
             pass
         else:
-            write_map_tsv(day, candidate, file_name)
+            write_map_tsv(day, candidate, file_name, recursive)
     else:
-        write_map_tsv(day, candidate, file_name)
+        write_map_tsv(day, candidate, file_name, recursive)
 
 def get_candidates_js_object(time=0, n=0, group_val="top", individual=""):
     candidates_object = []
