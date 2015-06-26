@@ -3,3 +3,4 @@ geo.pyc
 *.ipynb
 ipynb
 ipynb/
+.ipynb_checkpoints
